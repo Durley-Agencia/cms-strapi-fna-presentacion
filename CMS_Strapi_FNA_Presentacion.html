@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMS Strapi, Fondo Nacional del Ahorro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,450;9..144,560;9..144,650&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0b2340;
+  --paper:#f2f4f7;
+  --paper-2:#ffffff;
+  --slate:#3d475e;
+  --slate-2:#5b6980;
+  --accent:#8f6120;
+  --accent-light:#f0c46e;
+  --accent-brand:#e0a24a;
+  --flag-yellow:#f5c518;
+  --flag-blue:#3b4a70;
+  --flag-red:#b93049;
+  --brick:#a13c2f;
+  --green:#2e7d53;
+  --line:rgba(11,35,64,0.14);
+  --line-light:rgba(255,255,255,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;padding-top:56px;}
+h1,h2,h3,.serif{font-family:'Fraunces',serif;}
+::selection{background:var(--accent-light);color:var(--ink);}
+
+.section{min-height:100vh;padding:7vh 8vw 8vh 8vw;display:flex;flex-direction:column;justify-content:center;position:relative;border-bottom:1px solid var(--line);}
+.section.dark{background:var(--ink);color:#eef0f6;border-bottom:1px solid var(--line-light);}
+.section.dark .slate{color:#aab2c8;}
+.eyebrow-num{font-family:'Fraunces',serif;font-weight:450;font-size:0.95rem;color:var(--accent);letter-spacing:0.02em;margin-bottom:0.6rem;}
+.kicker{font-size:1.05rem;color:var(--slate);max-width:680px;}
+.section.dark .kicker{color:#c3c9dc;}
+h1{font-size:clamp(2.4rem,5.2vw,4.4rem);font-weight:560;line-height:1.06;letter-spacing:-0.01em;}
+h2{font-size:clamp(1.8rem,3.1vw,2.7rem);font-weight:560;line-height:1.12;letter-spacing:-0.01em;margin-bottom:0.9rem;}
+h3{font-size:1.2rem;font-weight:560;}
+p{color:var(--slate);}
+.section.dark p{color:#c3c9dc;}
+.max-w{max-width:760px;}
+
+.dotnav{position:fixed;right:1.8vw;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:9px;align-items:flex-end;max-height:88vh;overflow:visible;}
+.dotnav button{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;justify-content:flex-end;}
+.dotnav .lbl{font-size:0.68rem;color:var(--ink);background:rgba(243,242,236,0.96);padding:3px 8px;border-radius:3px;opacity:0;transform:translateX(6px);transition:opacity .18s ease, transform .18s ease;white-space:nowrap;border:1px solid var(--line);}
+.dotnav button:hover .lbl{opacity:1;transform:translateX(0);}
+.dotnav .dot{width:6px;height:6px;border-radius:50%;background:rgba(19,32,60,0.28);transition:all .2s ease;flex-shrink:0;}
+.dotnav button.active .dot{background:var(--accent-brand);width:9px;height:9px;}
+.dotnav button.active .lbl{opacity:1;transform:translateX(0);color:var(--ink);font-weight:600;}
+
+.progress-rail{position:fixed;left:0;top:0;height:3px;width:100%;background:transparent;z-index:60;}
+.progress-fill{height:100%;background:var(--accent);width:0%;transition:width .1s linear;}
+
+.hero{background:var(--ink);color:#eef0f6;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--accent-light);border:1px solid rgba(230,196,131,0.35);padding:6px 12px;border-radius:20px;margin-bottom:2rem;}
+.hero h1{margin:0.4rem 0 1.4rem 0;max-width:14ch;}
+.hero .sub{max-width:560px;font-size:1.15rem;color:#c3c9dc;margin-bottom:2.6rem;}
+.hero-stats{display:flex;gap:3.2rem;flex-wrap:wrap;margin-top:1rem;}
+.hero-stats div b{display:block;font-family:'Fraunces',serif;font-size:2.1rem;font-weight:560;color:#fff;}
+.hero-stats div span{font-size:0.82rem;color:#98a1ba;}
+.scroll-cue{position:absolute;bottom:2.4rem;left:8vw;font-size:0.78rem;color:#98a1ba;display:flex;align-items:center;gap:8px;}
+.scroll-cue .line{width:26px;height:1px;background:#98a1ba;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+.card{background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:1.4rem 1.5rem;}
+.card h3{margin-bottom:0.5rem;}
+.card p{font-size:0.9rem;}
+.section-scroll{max-height:78vh;overflow-y:auto;padding-right:0.6rem;}
+.section-scroll::-webkit-scrollbar{width:6px;}
+.section-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
+
+.role-strip{display:flex;flex-wrap:wrap;gap:0.7rem;margin-top:2rem;}
+.role-pill{border:1px solid var(--line);border-radius:5px;padding:0.9rem 1.1rem;min-width:150px;flex:1;background:var(--paper-2);}
+.role-pill .rn{font-family:'Fraunces',serif;font-weight:560;font-size:1rem;margin-bottom:2px;}
+.role-pill .rd{font-size:0.78rem;color:var(--slate-2);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2rem;margin-top:2.2rem;}
+@media(max-width:900px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+.stat-box{border-left:3px solid var(--accent-brand);padding-left:1rem;}
+.stat-box .num{font-family:'Fraunces',serif;font-weight:560;font-size:2.4rem;line-height:1;color:var(--ink);}
+.section.dark .stat-box .num{color:#fff;}
+.stat-box .lab{font-size:0.8rem;color:var(--slate-2);margin-top:0.4rem;}
+
+table.matrix{width:100%;border-collapse:collapse;font-size:0.82rem;background:var(--paper-2);border:1px solid var(--line);border-radius:6px;overflow:hidden;}
+table.matrix th{text-align:left;font-weight:600;font-size:0.71rem;color:var(--slate-2);padding:0.55rem 0.5rem;border-bottom:1px solid var(--line);}
+table.matrix td{padding:0.5rem 0.5rem;border-bottom:1px solid var(--line);text-align:center;font-size:0.77rem;}
+table.matrix td:first-child, table.matrix th:first-child{text-align:left;font-weight:600;}
+table.matrix tr{cursor:pointer;transition:background .15s ease;}
+table.matrix tr:hover{background:rgba(182,136,59,0.08);}
+table.matrix tr.active{background:rgba(182,136,59,0.16);}
+table.matrix tr.active td:first-child{color:var(--accent);}
+.val-si{color:var(--green);font-weight:600;}
+.val-no{color:var(--slate-2);}
+.val-cond{color:var(--accent);font-weight:600;}
+.matrix-wrap{display:grid;grid-template-columns:1.35fr 1fr;gap:2rem;align-items:start;margin-top:1.8rem;}
+@media(max-width:1000px){.matrix-wrap{grid-template-columns:1fr;}}
+.role-detail{background:var(--ink);color:#eef0f6;border-radius:6px;padding:1.6rem;min-height:300px;position:sticky;top:2rem;}
+.role-detail h3{color:#fff;margin-bottom:0.3rem;}
+.role-detail .rd-sub{font-size:0.78rem;color:var(--accent-light);margin-bottom:0.9rem;}
+.role-detail ul{padding-left:1.1rem;font-size:0.85rem;color:#c3c9dc;}
+.role-detail ul li{margin-bottom:0.5rem;}
+
+.flow{display:flex;align-items:flex-start;gap:0;margin-top:2rem;flex-wrap:wrap;}
+.flow-node{display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;position:relative;padding:0 0.4rem;min-width:108px;}
+.flow-node .fc{width:15px;height:15px;border-radius:50%;border:2px solid var(--accent);background:var(--paper);margin-bottom:0.6rem;transition:all .2s ease;}
+.flow-node.active .fc{background:var(--accent);transform:scale(1.25);}
+.flow-node .fn{font-size:0.8rem;font-weight:600;}
+.flow-node.active .fn{color:var(--accent);}
+.flow-arrow{flex:1;height:2px;background:var(--line);margin-top:7px;min-width:16px;align-self:flex-start;}
+.flow-branch{display:flex;gap:1.2rem;margin-top:1.1rem;flex-wrap:wrap;}
+.flow-branch .flow-node .fc{border-color:var(--brick);}
+.flow-branch .flow-node.active .fc{background:var(--brick);}
+.flow-branch .flow-node.active .fn{color:var(--brick);}
+.flow-detail{margin-top:1.6rem;background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:1.3rem 1.5rem;min-height:110px;}
+.flow-detail .ft{font-family:'Fraunces',serif;font-weight:560;font-size:1.08rem;margin-bottom:0.4rem;}
+.flow-detail p{font-size:0.88rem;}
+
+table.transition{width:100%;border-collapse:collapse;font-size:0.76rem;background:var(--paper-2);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:1.4rem;}
+table.transition th{text-align:left;font-size:0.68rem;color:var(--slate-2);padding:0.5rem 0.6rem;border-bottom:1px solid var(--line);font-weight:600;}
+table.transition td{padding:0.5rem 0.6rem;border-bottom:1px solid var(--line);}
+table.transition tr:last-child td{border-bottom:none;}
+
+.tabs-nav{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:1.6rem;margin-bottom:1.4rem;}
+.tab-btn{all:unset;cursor:pointer;font-size:0.8rem;padding:0.5rem 0.95rem;border:1px solid var(--line);border-radius:20px;color:var(--slate);transition:all .15s ease;}
+.tab-btn.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+table.limits{width:100%;border-collapse:collapse;font-size:0.83rem;background:var(--paper-2);border:1px solid var(--line);border-radius:6px;overflow:hidden;}
+table.limits th{text-align:left;font-size:0.7rem;color:var(--slate-2);padding:0.6rem 0.85rem;border-bottom:1px solid var(--line);font-weight:600;}
+table.limits td{padding:0.6rem 0.85rem;border-bottom:1px solid var(--line);vertical-align:top;}
+table.limits td.v{color:var(--accent);font-weight:600;white-space:nowrap;}
+table.limits tr:last-child td{border-bottom:none;}
+
+.gap-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:1.8rem;}
+@media(max-width:900px){.gap-grid{grid-template-columns:1fr;}}
+.gap-card{border:1px solid var(--line);border-radius:6px;padding:1.2rem 1.3rem;background:var(--paper-2);cursor:pointer;transition:box-shadow .15s ease;}
+.gap-card:hover{box-shadow:0 4px 18px rgba(19,32,60,0.08);}
+.gap-status{display:inline-flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:600;padding:3px 9px;border-radius:20px;margin-bottom:0.6rem;}
+.gap-status.covered{background:rgba(46,125,83,0.12);color:var(--green);}
+.gap-status.gap{background:rgba(156,74,54,0.12);color:var(--brick);}
+.gap-card h3{font-size:0.98rem;margin-bottom:0.3rem;}
+.gap-card .gd{font-size:0.83rem;color:var(--slate);max-height:0;overflow:hidden;transition:max-height .25s ease;}
+.gap-card.open .gd{max-height:220px;margin-top:0.5rem;}
+.gap-card .hint{font-size:0.7rem;color:var(--slate-2);margin-top:0.4rem;}
+
+/* accordion */
+.accordion{margin-top:1.8rem;display:flex;flex-direction:column;gap:0.6rem;}
+.acc-item{border:1px solid var(--line);border-radius:6px;background:var(--paper-2);overflow:hidden;}
+.acc-head{all:unset;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;width:100%;padding:1rem 1.2rem;cursor:pointer;font-family:'Fraunces',serif;font-weight:560;font-size:1rem;}
+.acc-head .plus{font-family:'Inter';font-size:1.1rem;color:var(--accent);transition:transform .2s ease;flex-shrink:0;margin-left:1rem;}
+.acc-item.open .acc-head .plus{transform:rotate(45deg);}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.acc-item.open .acc-body{max-height:2200px;}
+.acc-body-inner{padding:0 1.2rem 1.2rem 1.2rem;}
+.acc-body-inner p{font-size:0.85rem;margin-bottom:0.6rem;}
+.step-list{list-style:none;counter-reset:step;}
+.step-list li{counter-increment:step;position:relative;padding-left:2.2rem;margin-bottom:0.7rem;font-size:0.85rem;color:var(--slate);}
+.step-list li::before{content:counter(step);position:absolute;left:0;top:0;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--paper);border:1px solid var(--accent);color:var(--accent);font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Inter';}
+.acc-tag{display:inline-block;font-size:0.68rem;color:var(--slate-2);border:1px solid var(--line);border-radius:3px;padding:1px 7px;margin-left:0.7rem;font-family:'Inter';font-weight:500;vertical-align:middle;}
+
+/* checklist */
+.checklist{list-style:none;margin-top:1.8rem;display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;}
+@media(max-width:900px){.checklist{grid-template-columns:1fr;}}
+.checklist li{display:flex;gap:0.7rem;font-size:0.87rem;background:var(--paper-2);border:1px solid var(--line);border-radius:5px;padding:0.75rem 0.9rem;color:var(--ink);}
+.checklist li .cn{color:var(--accent);font-family:'Fraunces',serif;font-weight:560;flex-shrink:0;}
+.section.dark .eyebrow-num{color:var(--accent-light);}
+.section.dark .stat-box .lab{color:#b7c0d4;}
+.section.dark .footer-src{color:#a7afc4;}
+
+/* glossary */
+.gloss-search{margin-top:1.8rem;}
+.gloss-search input{width:100%;max-width:420px;padding:0.7rem 1rem;border:1px solid var(--line);border-radius:5px;font-family:'Inter';font-size:0.9rem;background:var(--paper-2);color:var(--ink);}
+.gloss-search input:focus{outline:none;border-color:var(--accent);}
+.gloss-count{font-size:0.78rem;color:var(--slate-2);margin-top:0.5rem;}
+.gloss-grid{margin-top:1.2rem;display:grid;grid-template-columns:repeat(2,1fr);gap:0.8rem;max-height:52vh;overflow-y:auto;padding-right:0.5rem;}
+@media(max-width:900px){.gloss-grid{grid-template-columns:1fr;}}
+.gloss-grid::-webkit-scrollbar{width:6px;}
+.gloss-grid::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
+.gloss-item{border-left:2px solid var(--line);padding-left:0.8rem;}
+.gloss-item .gt{font-family:'Fraunces',serif;font-weight:560;font-size:0.92rem;}
+.gloss-item .gd{font-size:0.8rem;color:var(--slate-2);margin-top:0.15rem;}
+.gloss-item.hidden{display:none;}
+
+/* domain table */
+table.domain{width:100%;border-collapse:collapse;font-size:0.85rem;background:var(--paper-2);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:1.8rem;}
+table.domain th{text-align:left;font-size:0.7rem;color:var(--slate-2);padding:0.65rem 0.9rem;border-bottom:1px solid var(--line);font-weight:600;}
+table.domain td{padding:0.65rem 0.9rem;border-bottom:1px solid var(--line);}
+table.domain td.n{color:var(--accent);font-weight:600;text-align:right;white-space:nowrap;}
+table.domain tr:last-child td{border-bottom:none;}
+table.domain tr:hover{background:rgba(182,136,59,0.06);}
+
+.closing-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.6rem;margin-top:2rem;}
+@media(max-width:900px){.closing-grid{grid-template-columns:1fr;}}
+.closing-grid ul{list-style:none;}
+.closing-grid li{padding:0.8rem 0;border-bottom:1px solid var(--line-light);display:flex;gap:0.9rem;font-size:0.92rem;color:#dfe2ec;}
+.closing-grid li b{color:var(--accent-light);font-family:'Fraunces',serif;font-weight:560;flex-shrink:0;}
+.footer-src{margin-top:2.2rem;font-size:0.76rem;color:#8891a8;border-top:1px solid var(--line-light);padding-top:1.2rem;}
+.version-table{width:100%;border-collapse:collapse;font-size:0.78rem;margin-top:1rem;color:#c3c9dc;}
+.version-table th{text-align:left;color:#8891a8;padding:0.4rem 0.8rem 0.4rem 0;border-bottom:1px solid var(--line-light);font-weight:600;font-size:0.68rem;}
+.version-table td{padding:0.4rem 0.8rem 0.4rem 0;border-bottom:1px solid var(--line-light);}
+
+.tricolor{display:flex;height:5px;width:64px;border-radius:2px;overflow:hidden;margin:1.4rem 0 0 0;}
+.tricolor span{flex:1;}
+.tricolor .y{background:var(--flag-yellow);}
+.tricolor .b{background:var(--flag-blue);}
+.tricolor .r{background:var(--flag-red);}
+.section.dark .tricolor{opacity:0.95;}
+.brand-bar{
+  position:fixed;top:0;left:0;right:0;z-index:55;height:56px;
+  display:flex;align-items:center;gap:0.7rem;
+  padding:0 1.3rem;
+  background:rgba(11,35,64,0.96);
+  backdrop-filter:blur(6px);
+  box-shadow:0 1px 0 rgba(255,255,255,0.08);
+}
+.brand-bar img{height:30px;width:auto;display:block;}
+.brand-bar .chapter{
+  font-family:'Fraunces',serif;font-size:0.72rem;color:var(--ink);
+  background:rgba(255,255,255,0.88);border:1px solid var(--line);
+  padding:3px 10px;border-radius:20px;white-space:nowrap;
+}
+
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease, transform .5s ease;}
+.reveal.in-view{opacity:1;transform:translateY(0);}
+.card, .role-pill, .gap-card, .acc-item{transition:transform .18s ease, box-shadow .18s ease;}
+.card:hover, .gap-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(11,35,64,0.09);}
+.role-pill:hover{transform:translateY(-2px);border-color:var(--accent);}
+.acc-item:hover{border-color:var(--accent);}
+
+/* quiz */
+.quiz-wrap{margin-top:2rem;max-width:760px;}
+.quiz-progress{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:0.9rem;}
+.quiz-progress-fill{height:100%;background:var(--accent-brand);width:5%;transition:width .3s ease;}
+.quiz-meta{display:flex;justify-content:space-between;font-size:0.8rem;color:var(--slate-2);margin-bottom:1rem;}
+.quiz-card{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:1.6rem 1.7rem;min-height:220px;}
+.quiz-question{font-family:'Fraunces',serif;font-weight:560;font-size:1.15rem;margin-bottom:1.1rem;color:var(--ink);}
+.quiz-options{display:flex;flex-direction:column;gap:0.6rem;}
+.quiz-option{all:unset;box-sizing:border-box;display:flex;gap:0.7rem;align-items:flex-start;padding:0.75rem 0.9rem;border:1px solid var(--line);border-radius:6px;cursor:pointer;font-size:0.9rem;color:var(--ink);transition:all .15s ease;}
+.quiz-option:hover{border-color:var(--accent-brand);background:rgba(224,162,74,0.06);}
+.quiz-option .qletter{font-family:'Fraunces',serif;font-weight:600;color:var(--accent);flex-shrink:0;}
+.quiz-option.correct{border-color:var(--green);background:rgba(46,125,83,0.08);}
+.quiz-option.correct .qletter{color:var(--green);}
+.quiz-option.incorrect{border-color:var(--brick);background:rgba(161,60,47,0.08);}
+.quiz-option.incorrect .qletter{color:var(--brick);}
+.quiz-option.disabled{cursor:default;}
+.quiz-explain{margin-top:1.1rem;padding-top:1rem;border-top:1px solid var(--line);font-size:0.86rem;color:var(--slate);}
+.quiz-explain b{color:var(--ink);}
+.quiz-nav{display:flex;gap:0.8rem;margin-top:1.2rem;align-items:center;}
+.quiz-btn{all:unset;cursor:pointer;background:var(--ink);color:#fff;font-size:0.85rem;font-weight:600;padding:0.7rem 1.4rem;border-radius:6px;transition:opacity .15s ease;}
+.quiz-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.quiz-btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
+.quiz-result{text-align:center;padding:1.4rem 0;}
+.quiz-result .score-num{font-family:'Fraunces',serif;font-size:3rem;font-weight:560;color:var(--ink);}
+.quiz-result .score-lab{color:var(--slate-2);font-size:0.9rem;margin-top:0.3rem;}
+.quiz-result .score-msg{margin-top:1rem;font-size:0.95rem;color:var(--slate);max-width:460px;margin-left:auto;margin-right:auto;}
+
+@media(max-width:700px){
+  .dotnav .lbl{display:none;}
+  .section{padding:6vh 6vw 6vh 6vw;}
+  .section-scroll{max-height:none;}
+  .brand-bar .chapter{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-rail"><div class="progress-fill" id="progressFill"></div></div>
+<div class="brand-bar">
+  <img src="data:image/png;base64,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" alt="Agencia Nacional Digital">
+  <span class="chapter" id="chapterBadge">Portada</span>
+</div>
+<nav class="dotnav" id="dotnav"></nav>
+
+<!-- 0. HERO -->
+<section class="section hero" id="s0" data-label="Portada">
+  <span class="hero-badge">Manual operativo · Versión 1.0 · 08/07/2026</span>
+  <h1>El CMS Strapi del Fondo Nacional del Ahorro, explicado de principio a fin.</h1>
+  <p class="sub">Un recorrido completo por el backoffice editorial que sostiene el portal institucional del FNA: cómo está organizado, quién puede hacer qué, cómo se opera día a día y cómo se gobierna la calidad del contenido publicado.</p>
+  <div class="hero-stats">
+    <div><b>155</b><span>páginas del manual original</span></div>
+    <div><b>21</b><span>capítulos cubiertos aquí</span></div>
+    <div><b>188</b><span>tipos de contenido</span></div>
+    <div><b>60</b><span>términos de glosario</span></div>
+  </div>
+  <div class="tricolor"><span class="y"></span><span class="b"></span><span class="r"></span></div>
+  <div class="scroll-cue"><div class="line"></div> Desplázate para comenzar</div>
+</section>
+
+<!-- 1. OBJETO Y ALCANCE -->
+<section class="section" id="s1" data-label="Objeto y alcance">
+  <div class="eyebrow-num">01 · Objeto y alcance</div>
+  <h2>Un manual de operación, no de intención</h2>
+  <p class="kicker">Este documento describe cómo funciona el CMS <em>tal como opera hoy</em>: capacidades, límites y responsabilidades por perfil. No reemplaza la capacitación funcional interna ni las decisiones de gobierno de contenido.</p>
+  <div class="grid-2" style="margin-top:2.2rem;">
+    <div class="card">
+      <h3>Qué cubre</h3>
+      <p>Acceso y navegación del panel · gestión de contenido en Single y Collection Types · componentes, relaciones, campos multimedia y SEO · operación bilingüe (ES/EN) · Biblioteca multimedia · flujo editorial propio · auditoría y trazabilidad · administración avanzada para perfiles autorizados.</p>
+    </div>
+    <div class="card">
+      <h3>Qué queda fuera</h3>
+      <p>Desarrollo técnico de frontend o backend · modificación directa de base de datos · despliegue de infraestructura · definición técnica de nuevos modelos de datos · herramientas internas de indexación o búsqueda fuera del uso normal del editor. Estos temas viven en "Documentación código" y "Documento arquitectura".</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. AUDIENCIA -->
+<section class="section" id="s2" data-label="Audiencia">
+  <div class="eyebrow-num">02 · Audiencia y perfiles</div>
+  <h2>Siete perfiles, un mismo ciclo de contenido</h2>
+  <p class="kicker">Lectura obligatoria para quienes crean, ajustan, validan, aprueban, publican contenido, administran usuarios y roles, o consultan trazabilidad de cambios.</p>
+  <div class="role-strip">
+    <div class="role-pill"><div class="rn">Super Admin</div><div class="rd">Strapi · acceso técnico pleno</div></div>
+    <div class="role-pill"><div class="rn">Administrador FNA</div><div class="rd">Gestión institucional amplia</div></div>
+    <div class="role-pill"><div class="rn">Publicador</div><div class="rd">Publica contenido aprobado</div></div>
+    <div class="role-pill"><div class="rn">Aprobador</div><div class="rd">Valida antes de publicar</div></div>
+    <div class="role-pill"><div class="rn">Editor de contenido</div><div class="rd">Revisa forma y consistencia</div></div>
+    <div class="role-pill"><div class="rn">Creador de contenido</div><div class="rd">Redacta sus propias entradas</div></div>
+    <div class="role-pill"><div class="rn">Supervisor / Auditor</div><div class="rd">Lectura global, sin edición</div></div>
+  </div>
+</section>
+
+<!-- 3. MARCO GENERAL Y RIESGOS -->
+<section class="section" id="s3" data-label="Marco general y riesgos">
+  <div class="eyebrow-num">03 · Marco general del CMS</div>
+  <h2>Qué rol cumple Strapi, y qué puede salir mal</h2>
+  <p class="kicker">Strapi es el repositorio editorial estructurado y el punto único de administración de contenido del ecosistema FNA. El frontend en Next.js lo consume mediante regeneración incremental (ISR) y archivos de fallback: una arquitectura que exige disciplina editorial.</p>
+  <div class="grid-3" style="margin-top:2rem;">
+    <div class="card">
+      <h3>Riesgo 1, Contenido incompleto</h3>
+      <p>Publicar sin completar campos obligatorios deja información rota o mal presentada. <b style="color:var(--ink)">Prevención:</b> checklist por rol antes de enviar/aprobar. <b style="color:var(--ink)">Corrección:</b> completar campos y republicar.</p>
+    </div>
+    <div class="card">
+      <h3>Riesgo 2, Cambios no inmediatos</h3>
+      <p>La ISR y la caché de CDN (Cloudflare) hacen que un cambio publicado no sea visible al instante. <b style="color:var(--ink)">Prevención:</b> planificar con anticipación. <b style="color:var(--ink)">Corrección:</b> escalamiento técnico si persiste.</p>
+    </div>
+    <div class="card">
+      <h3>Riesgo 3, Fallback desactualizado</h3>
+      <p>Si Strapi no responde, el frontend usa JSON de respaldo: tasas vencidas, horarios cerrados que aparecen abiertos. <b style="color:var(--ink)">Prevención:</b> revisar el fallback regularmente y purgar caché tras actualizar.</p>
+    </div>
+  </div>
+  <p class="slate" style="margin-top:1.6rem;font-size:0.86rem;max-width:700px;">Principio institucional de completitud: un campo faltante nunca es neutral. Puede afectar la visualización, la consistencia entre idiomas, los metadatos o la publicación efectiva del contenido.</p>
+</section>
+
+<!-- 4. ESCALA -->
+<section class="section dark" id="s4" data-label="Escala del CMS">
+  <div class="eyebrow-num">04 · Escala del sistema</div>
+  <h2>No es un documento de Word. Es un sistema con reglas.</h2>
+  <p class="kicker">Cada contenido tiene su propia estructura, los bloques se reutilizan de forma controlada, y un cambio en un bloque compartido se propaga automáticamente a todas las páginas donde se usa.</p>
+  <div class="stat-grid">
+    <div class="stat-box"><div class="num" data-count="188">0</div><div class="lab">Tipos de contenido</div></div>
+    <div class="stat-box"><div class="num" data-count="166">0</div><div class="lab">Páginas únicas</div></div>
+    <div class="stat-box"><div class="num" data-count="22">0</div><div class="lab">Colecciones</div></div>
+    <div class="stat-box"><div class="num" data-count="609">0</div><div class="lab">Bloques reutilizables</div></div>
+    <div class="stat-box"><div class="num" data-count="43">0</div><div class="lab">Grupos de bloques</div></div>
+  </div>
+  <p class="slate" style="margin-top:2.2rem;max-width:640px;font-size:0.9rem;">Ejemplo: si un "Bloque de Contacto" se usa en 10 páginas y se actualiza el teléfono en el origen, se actualiza automáticamente en las 10. Por eso importa saber dónde crear cada cosa y cuándo reutilizar un bloque existente.</p>
+</section>
+
+<!-- 5. PANEL ADMIN -->
+<section class="section" id="s5" data-label="El panel">
+  <div class="eyebrow-num">05 · Estructura del panel</div>
+  <h2>Un panel adaptado a la identidad institucional del FNA</h2>
+  <p class="kicker">Acceso vía https://fnawebdev-admin.agencianacionaldigital.com.co/, personal e intransferible. Cada usuario administra su nombre visible, correo, contraseña e idioma de interfaz sin afectar permisos ni estructura del CMS.</p>
+  <div class="grid-2" style="margin-top:2rem;">
+    <div class="card">
+      <h3>Módulos principales</h3>
+      <p><b style="color:var(--ink)">Gestor de Contenido</b>: páginas, entradas y registros.<br><br>
+      <b style="color:var(--ink)">Biblioteca multimedia</b>: carga y organización de archivos.<br><br>
+      <b style="color:var(--ink)">Auditor del Sitio</b>: performance, accesibilidad, SEO, enlaces rotos.<br><br>
+      <b style="color:var(--ink)">Auditoría / Trazabilidad</b>: registro exportable de operaciones.<br><br>
+      <b style="color:var(--ink)">Configuración</b>: usuarios, roles, tokens API y webhooks.</p>
+    </div>
+    <div class="card">
+      <h3>Personalización visible</h3>
+      <p>"Content Manager" se presenta como <b style="color:var(--ink)">Gestor de Contenido</b>, y el plugin propio export-import-fna aparece como <b style="color:var(--ink)">Exportar/Importar</b>.</p>
+      <p style="margin-top:0.7rem;">Se ocultan de la experiencia estándar: Review Workflows nativo, Single Sign-On, Content History, Releases, Marketplace y Cloud, sin que esto implique que estén desinstalados del sistema base.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. ROLES Y PERMISOS -->
+<section class="section" id="s6" data-label="Roles y permisos">
+  <div class="eyebrow-num">06 · Roles y permisos</div>
+  <h2>Matriz de capacidades operativas</h2>
+  <p class="kicker">El CMS controla el acceso por roles (RBAC). Selecciona un perfil en la tabla para ver su alcance narrado.</p>
+  <div class="matrix-wrap">
+    <div>
+      <table class="matrix" id="rolesMatrix">
+        <thead><tr><th>Perfil</th><th>Lectura</th><th>Creación</th><th>Edición</th><th>Elimin.</th><th>Public.</th><th>Media</th><th>Auditoría</th><th>Config.</th></tr></thead>
+        <tbody>
+          <tr data-role="superadmin"><td>Super Admin</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td></tr>
+          <tr data-role="adminfna"><td>Administrador FNA</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-no">No</td></tr>
+          <tr data-role="publicador"><td>Publicador</td><td class="val-si">Sí</td><td class="val-no">No</td><td class="val-si">Sí</td><td class="val-no">No</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-no">No</td><td class="val-no">No</td></tr>
+          <tr data-role="supervisor"><td>Supervisor / Auditor</td><td class="val-si">Sí</td><td class="val-no">No</td><td class="val-no">No</td><td class="val-no">No</td><td class="val-no">No</td><td class="val-cond">Lectura</td><td class="val-no">No</td><td class="val-no">No</td></tr>
+          <tr data-role="aprobador"><td>Aprobador</td><td class="val-si">Sí</td><td class="val-no">No</td><td class="val-si">Sí</td><td class="val-no">No</td><td class="val-no">No</td><td class="val-cond">Lectura</td><td class="val-no">No</td><td class="val-no">No</td></tr>
+          <tr data-role="editor"><td>Editor de contenido</td><td class="val-si">Sí</td><td class="val-no">No</td><td class="val-si">Sí</td><td class="val-no">No</td><td class="val-no">No</td><td class="val-si">Sí</td><td class="val-no">No</td><td class="val-no">No</td></tr>
+          <tr data-role="creador"><td>Creador de contenido</td><td class="val-si">Sí</td><td class="val-cond">Cond.¹</td><td class="val-cond">Cond.²</td><td class="val-no">No</td><td class="val-no">No</td><td class="val-si">Sí</td><td class="val-no">No</td><td class="val-no">No</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.74rem;color:var(--slate-2);margin-top:0.7rem;">¹ Solo puede crear entradas en Collection Types. · ² No puede editar contenido creado por otros Creadores.</p>
+      <p style="font-size:0.83rem;margin-top:1rem;"><b style="color:var(--ink)">Roles operativos vs. administrativos:</b> solo Administrador FNA y Super Admin gestionan usuarios, i18n, tokens API/webhooks y Content-Type Builder. Los roles operativos (Creador, Editor, Aprobador, Publicador) no salen del Gestor de Contenido, la Biblioteca multimedia y el Flujo Editorial.</p>
+    </div>
+    <div class="role-detail" id="roleDetail">
+      <div class="rd-sub">Perfil seleccionado</div>
+      <h3 id="rdTitle">Super Admin</h3>
+      <ul id="rdList"></ul>
+    </div>
+  </div>
+</section>
+
+<!-- 7. GESTION DE CONTENIDO, ESTRUCTURA -->
+<section class="section" id="s7" data-label="Estructura de contenido">
+  <div class="eyebrow-num">07 · Gestión de contenido</div>
+  <h2>Cómo está construido el contenido por dentro</h2>
+  <div class="section-scroll">
+  <div class="grid-3" style="margin-top:1.6rem;">
+    <div class="card"><h3>Collection & Single Types</h3><p><b style="color:var(--ink)">Collection Types</b> para entradas repetibles (noticias, FAQ). <b style="color:var(--ink)">Single Types</b> para páginas únicas (Inicio, Contacto). Vista de lista para navegar entradas, vista de edición para el formulario completo.</p></div>
+    <div class="card"><h3>Guardado y publicación</h3><p>Guardar deja el contenido en Borrador, no visible al público. Publicar lo hace visible. Despublicar revierte a un estado no visible sin eliminar el contenido del CMS.</p></div>
+    <div class="card"><h3>Campos y validaciones</h3><p>Los campos obligatorios llevan asterisco rojo. Cada tipo de contenido define sus propias reglas de validación (longitud, formato, requerido).</p></div>
+    <div class="card"><h3>Componentes repetibles</h3><p>Permiten agregar múltiples elementos del mismo tipo dentro de un contenido (por ejemplo, una lista de preguntas frecuentes dentro de una página).</p></div>
+    <div class="card"><h3>Relaciones y UID/slugs</h3><p>Las relaciones vinculan contenidos entre sí. El UID/slug es el identificador único usado en las URL y rutas de navegación del portal.</p></div>
+    <div class="card"><h3>Zonas dinámicas</h3><p>La zona "Secciones" arma páginas combinando bloques del catálogo. Los "Contenedores/Secciones reutilizables" son bloques compartidos entre páginas; un cambio se propaga a todos sus usos.</p></div>
+  </div>
+  <div class="accordion">
+    <div class="acc-item">
+      <button class="acc-head"><span>Micrositios, plantillas y bloques especiales<span class="acc-tag">7.10</span></span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <p><b style="color:var(--ink)">Páginas dinámicas y micrositios (7.10.1 a 7.10.3):</b> el content-type «Páginas» funciona como constructor de páginas; los micrositios organizan una jerarquía de página padre, páginas hijas y ruta de navegación.</p>
+        <p><b style="color:var(--ink)">Plantillas de página (7.10.6):</b> el campo "Es plantilla" permite crear una página base para duplicar y reutilizar como punto de partida de páginas nuevas.</p>
+        <p><b style="color:var(--ink)">Banner unificado (7.10.7):</b> bloque estandarizado para las cabeceras visuales de página.</p>
+        <p><b style="color:var(--ink)">Listas (7.10.8):</b> el plugin "Listas" y el bloque "Lista (vinculada)" permiten conectar catálogos de contenido a una página sin duplicar información.</p>
+        <p><b style="color:var(--ink)">Carpeta de documentos (7.10.9):</b> bloque para agrupar descargas relacionadas (PDF, Excel) dentro de una página.</p>
+      </div></div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- 8. GUIAS OPERATIVAS -->
+<section class="section" id="s8" data-label="Guías paso a paso">
+  <div class="eyebrow-num">08 · Guías operativas</div>
+  <h2>El manual, convertido en procedimientos accionables</h2>
+  <p class="kicker">Nueve guías paso a paso cubren el ciclo de vida completo de un contenido. Haz clic para expandir cada una.</p>
+  <div class="section-scroll">
+  <div class="accordion">
+    <div class="acc-item open">
+      <button class="acc-head"><span>Crear contenido en un Collection Type<span class="acc-tag">7.12</span></span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <ol class="step-list">
+          <li>Iniciar sesión en el panel con usuario y contraseña institucionales (personales e intransferibles).</li>
+          <li>Entrar a "Gestor de Contenido" y elegir el Collection Type (ej. Artículos Blog).</li>
+          <li>Clic en "Crear nueva entrada" y verificar que el locale sea Español (es). Siempre se crea primero en español.</li>
+          <li>Completar los campos obligatorios (marcados con *), empezando por el título (máx. 100 caracteres).</li>
+          <li>Diligenciar la sección SEO: metaTitle (≤60), metaDescription (entre 50 y 160) y metaImage desde la Biblioteca multimedia.</li>
+          <li>Cargar imágenes o documentos del cuerpo del contenido si aplica.</li>
+          <li>Guardar como borrador y confirmar que el estado editorial diga "Borrador".</li>
+          <li>Cambiar el estado a "En Revisión", asignar un Editor (opcional pero recomendado) y aplicar el cambio.</li>
+          <li>Esperar la retroalimentación: el Editor puede aprobar, devolver con comentarios o rechazar.</li>
+        </ol>
+      </div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>Editar contenido existente<span class="acc-tag">7.12.1</span></span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <ol class="step-list">
+          <li>Localizar el contenido en la vista de lista del Collection o Single Type.</li>
+          <li>Verificar el locale (idioma) de trabajo antes de editar.</li>
+          <li>Consultar el estado editorial actual, que condiciona qué se puede hacer.</li>
+          <li>Identificar y editar los campos que requieren cambio; ajustar SEO si el título cambió.</li>
+          <li>Actualizar imágenes si corresponde.</li>
+          <li>Guardar los cambios.</li>
+          <li>Decidir el siguiente paso según el estado (reenviar a revisión, republicar, etc.).</li>
+          <li>Actualizar el estado editorial según el alcance del rol del usuario.</li>
+          <li>Si el contenido es bilingüe, repetir la revisión en el otro locale.</li>
+        </ol>
+      </div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>Aprobar contenido<span class="acc-tag">7.12.2</span></span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <ol class="step-list">
+          <li>Identificar los contenidos pendientes desde el widget "Mis asignaciones".</li>
+          <li>Abrir la vista de edición y confirmar el panel de Flujo Editorial.</li>
+          <li>Revisar el contenido de forma integral: completitud de campos, coherencia y calidad.</li>
+          <li>Tomar la decisión desde el selector de estado: Aprobar (pasa a "Aprobado") o Rechazar con comentario obligatorio.</li>
+          <li>Aplicar el cambio de estado. Queda registrado en auditoría.</li>
+        </ol>
+        <p style="margin-top:0.4rem;">Si no hay decisión manual en <b style="color:var(--ink)">3 días</b>, el sistema aprueba automáticamente y deja constancia de la transición.</p>
+      </div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>Publicar contenido<span class="acc-tag">7.12.3</span></span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <ol class="step-list">
+          <li>Verificar que el estado sea "Aprobado para publicar".</li>
+          <li>Confirmar que la versión en español esté completa.</li>
+          <li>Cambiar al locale inglés (en) y verificar su completitud si el contenido es bilingüe.</li>
+          <li>Revisar los campos SEO en ambos idiomas.</li>
+          <li>Clic en "Publicar" en la interfaz de edición.</li>
+          <li>Verificar la confirmación que presenta el sistema.</li>
+          <li>Confirmar que el estado se actualice a "Publicado / Visible".</li>
+          <li>Recordar que la visibilidad en el portal no es inmediata (ISR + caché).</li>
+        </ol>
+      </div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>Despublicar contenido<span class="acc-tag">7.12.4</span></span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <ol class="step-list">
+          <li>Localizar el contenido publicado.</li>
+          <li>Verificar que efectivamente está publicado.</li>
+          <li>Acceder al menú de acciones del formulario.</li>
+          <li>Seleccionar "Anular publicación".</li>
+          <li>Confirmar la despublicación.</li>
+          <li>Documentar el motivo, que queda como referencia institucional.</li>
+        </ol>
+      </div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>Restaurar contenido (historial de versiones)<span class="acc-tag">7.12.5 / 7.12.7</span></span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <ol class="step-list">
+          <li>Abrir el contenido cuyo historial se desea consultar.</li>
+          <li>Localizar el panel "Historial de cambios" en el lateral derecho.</li>
+          <li>Ver la lista cronológica de versiones (hasta 50 por documento).</li>
+          <li>Seleccionar una versión para visualizar su contenido; opcionalmente comparar diferencias.</li>
+          <li>Clic en "Restaurar esta versión" y confirmar.</li>
+          <li>Revisar el contenido restaurado y validar los campos.</li>
+          <li>Guardar y reenviar a revisión si es necesario.</li>
+        </ol>
+      </div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>Importación masiva en una colección<span class="acc-tag">7.12.6</span></span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <ol class="step-list">
+          <li>Preparar el archivo CSV con los datos a importar.</li>
+          <li>Llenar los datos a partir de la fila 2 (la fila 1 son encabezados).</li>
+          <li>Validar el archivo antes de importar.</li>
+          <li>Ir a la colección donde se hará la importación.</li>
+          <li>Buscar el botón "Importar" y seleccionar el archivo CSV.</li>
+          <li>Revisar el resumen de importación que presenta el sistema.</li>
+          <li>Confirmar la importación.</li>
+          <li>Verificar que los datos se importaron correctamente.</li>
+        </ol>
+        <p style="margin-top:0.4rem;">Recomendación: probar primero con 5 a 10 registros antes de una carga masiva completa.</p>
+      </div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>Crear página desde plantilla e incluir bloque compartido<span class="acc-tag">7.12.8</span></span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <ol class="step-list">
+          <li>Abrir la colección «Páginas».</li>
+          <li>Elegir una plantilla y abrirla.</li>
+          <li>Duplicar la plantilla.</li>
+          <li>Convertir la copia en una página real.</li>
+          <li>Ajustar las secciones según el contenido específico.</li>
+          <li>Incluir un bloque compartido desde el catálogo si aplica.</li>
+          <li>Guardar, enviar a revisión y publicar siguiendo el flujo editorial estándar.</li>
+        </ol>
+      </div></div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- 9. TROUBLESHOOTING -->
+<section class="section" id="s9" data-label="Troubleshooting">
+  <div class="eyebrow-num">09 · Guía de troubleshooting</div>
+  <h2>Los siete problemas más comunes, resueltos</h2>
+  <div class="section-scroll">
+  <div class="accordion">
+    <div class="acc-item open">
+      <button class="acc-head"><span>Mi contenido no aparece en el portal público</span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <p>Si el estado dice <b style="color:var(--ink)">"Borrador"</b>: no está publicado, hay que completar los campos obligatorios y publicar. Si dice <b style="color:var(--ink)">"En Revisión"</b>: espera aprobación. Si dice <b style="color:var(--ink)">"Publicado"</b> y aun así no aparece tras 2 minutos: limpia caché del navegador (Ctrl+Shift+Del) y recarga. Verifica también que el locale correcto (es/en) esté publicado. Si persiste tras 5 minutos, es un problema técnico: contacta a soporte@fna.gov.co.</p>
+      </div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>No puedo editar: "contenido bloqueado"</span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner"><p>Otro usuario está editando el mismo contenido (plugin content-lock). Espera hasta 30 minutos (se libera automáticamente), contacta a esa persona, o pide al administrador que fuerce el desbloqueo. No sirve de nada cerrar el navegador para intentar desbloquearlo antes de tiempo.</p></div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>Error de validación al guardar</span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner"><p>Lee el mensaje exacto: "obligatorio" (rellena el campo), "email inválido" (revisa el formato), "máximo X caracteres" (acorta el texto). Corrige el campo señalado en rojo y guarda de nuevo.</p></div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>Se cerró la sesión sin guardar</span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner"><p>La sesión se cierra tras 5 minutos de inactividad. Guarda cada 5 minutos como hábito. No hay recuperación automática de un borrador no guardado tras cerrar sesión.</p></div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>La Biblioteca multimedia está muy lenta</span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner"><p>Usa la búsqueda en lugar de navegar por carpetas; si sigue lenta, acota a una carpeta específica; considera cargar una imagen nueva en vez de buscar una antigua; pide al administrador que limpie archivos huérfanos.</p></div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>El contenido rechazado volvió a Borrador</span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner"><p>Abre el contenido, lee con atención el comentario de rechazo en el panel "Flujo Editorial", haz los cambios solicitados y envía nuevamente a revisión.</p></div></div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-head"><span>"Acceso denegado" a un contenido</span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner"><p>Tu rol no tiene permiso para ese tipo de contenido. Pide a tu supervisor el rol correcto, asigna la tarea a alguien con permiso, o contacta al Administrador FNA para expandir tus permisos.</p></div></div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- 10. CICLO DE VIDA / FLUJO -->
+<section class="section" id="s10" data-label="Flujo y ciclo de vida">
+  <div class="eyebrow-num">10 · Flujo editorial y ciclo de vida</div>
+  <h2>El contenido nunca se publica sin pasar por revisión</h2>
+  <p class="kicker">El plugin propio <b style="color:var(--ink)">state-workflows</b> reemplaza Review Workflows de Enterprise. Haz clic en cada estado para ver el detalle.</p>
+  <div class="section-scroll">
+  <div class="flow" id="mainFlow">
+    <div class="flow-node active" data-state="borrador"><div class="fc"></div><div class="fn">Borrador</div></div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node" data-state="revision"><div class="fc"></div><div class="fn">En Revisión</div></div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node" data-state="listo"><div class="fc"></div><div class="fn">Listo para Aprobación</div></div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node" data-state="aprobado"><div class="fc"></div><div class="fn">Aprobado</div></div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node" data-state="publicado"><div class="fc"></div><div class="fn">Publicado</div></div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node" data-state="archivado"><div class="fc"></div><div class="fn">Archivado</div></div>
+  </div>
+  <div class="flow-branch" id="branchFlow">
+    <div class="flow-node" data-state="devuelto"><div class="fc"></div><div class="fn">Devuelto</div></div>
+    <div class="flow-node" data-state="rechazado"><div class="fc"></div><div class="fn">Rechazado</div></div>
+    <div class="flow-node" data-state="bypass"><div class="fc"></div><div class="fn">Publicación directa (bypass)</div></div>
+  </div>
+  <div class="flow-detail" id="flowDetail">
+    <div class="ft">Borrador</div>
+    <p>Estado inicial. El contenido existe en el CMS pero NO es visible en el portal público. Puede editarse libremente por su dueño.</p>
+  </div>
+
+  <table class="transition">
+    <thead><tr><th>Transición</th><th>Desde</th><th>Hacia</th><th>Quién la ejecuta</th><th>Permite edición</th></tr></thead>
+    <tbody>
+      <tr><td>Crear</td><td>Ninguno</td><td>Borrador</td><td>Creador de Contenido</td><td>Sí</td></tr>
+      <tr><td>Enviar a revisión</td><td>Borrador</td><td>En Revisión</td><td>Creador</td><td>No (bloqueado)</td></tr>
+      <tr><td>Devolver</td><td>En Revisión</td><td>Borrador</td><td>Editor</td><td>Sí</td></tr>
+      <tr><td>Aprobar (editorial)</td><td>En Revisión</td><td>Listo para Aprobación</td><td>Editor</td><td>No</td></tr>
+      <tr><td>Rechazar</td><td>En Revisión / Listo</td><td>Rechazado</td><td>Editor / Aprobador</td><td>Sí, Creador corrige</td></tr>
+      <tr><td>Aprobar final</td><td>Listo para Aprobación</td><td>Aprobado</td><td>Aprobador</td><td>No</td></tr>
+      <tr><td>Publicar</td><td>Aprobado</td><td>Publicado</td><td>Publicador</td><td>Sí, cambios urgentes</td></tr>
+      <tr><td>Despublicar</td><td>Publicado</td><td>Despublicado</td><td>Publicador</td><td>Sí, se guarda en Borrador</td></tr>
+      <tr><td>Archivar</td><td>Publicado / Borrador</td><td>Archivado</td><td>Administrador</td><td>No</td></tr>
+    </tbody>
+  </table>
+  <div class="grid-2" style="margin-top:1.4rem;">
+    <div class="card"><h3>Autoaprobación automática</h3><p>Si un contenido permanece "Listo para Aprobación" más de 3 días sin decisión, el sistema lo aprueba automáticamente y deja registro de la transición. Revisa regularmente "Mis asignaciones".</p></div>
+    <div class="card"><h3>Casos especiales</h3><p>Cambios urgentes (typo, número) pueden publicarse directamente. Cambios mayores deben volver a revisión. La publicación directa exige justificación registrada. Si un contenido es rechazado más de dos veces, contacta directamente al Editor/Aprobador antes de reenviarlo.</p></div>
+  </div>
+  </div>
+</section>
+
+<!-- 11. IDIOMAS -->
+<section class="section" id="s11" data-label="Gestión de idiomas">
+  <div class="eyebrow-num">11 · Gestión de idiomas</div>
+  <h2>Español primero, inglés después, sin excepciones</h2>
+  <p class="kicker">i18n habilitado con locale por defecto <b style="color:var(--ink)">es</b> y locale adicional <b style="color:var(--ink)">en</b>. Cada idioma es una versión independiente: publicar en español no publica automáticamente en inglés.</p>
+  <div class="grid-2" style="margin-top:1.8rem;">
+    <div class="card">
+      <h3>Reglas institucionales</h3>
+      <p>1. Completar primero la versión en español.<br>2. Trasladar al inglés solo contenido validado y vigente.<br>3. Revisar títulos, descripciones, SEO y medios por idioma.<br>4. No dejar locales a mitad de diligenciamiento si hacen parte del alcance publicado.</p>
+    </div>
+    <div class="card">
+      <h3>Riesgos por desalineación</h3>
+      <p>Información parcial para el usuario internacional, descripciones meta incongruentes, experiencias distintas entre idiomas, o activación de fallback por locale ausente.</p>
+    </div>
+  </div>
+  <div class="accordion">
+    <div class="acc-item">
+      <button class="acc-head"><span>Completar la versión en inglés de un contenido existente<span class="acc-tag">8.6</span></span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <ol class="step-list">
+          <li>Localizar el selector de locale en la parte superior derecha del formulario (por defecto Spanish/es).</li>
+          <li>Cambiar al locale English (en) desde el desplegable.</li>
+          <li>Traducir cada campo localizable: títulos, subtítulos, descripciones, texto enriquecido, botones.</li>
+          <li>Completar todos los campos y guardar como borrador en el locale inglés.</li>
+          <li>Enviar a Flujo Editorial (Borrador → En Revisión) para que el Editor valide la traducción.</li>
+        </ol>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12. BIBLIOTECA MULTIMEDIA -->
+<section class="section" id="s12" data-label="Biblioteca multimedia">
+  <div class="eyebrow-num">12 · Gestión de archivos e imágenes</div>
+  <h2>Un único punto oficial para todo activo digital</h2>
+  <p class="kicker">Los archivos deben cargarse mediante campos de media; deben evitarse URLs manuales cuando ya existe un campo de carga. Los archivos se almacenan en Azure Blob Storage.</p>
+  <div class="section-scroll">
+  <div class="grid-3" style="margin-top:1.6rem;">
+    <div class="card"><h3>Organización de carpetas</h3><p>Por dominio funcional o sección del portal: personas/, transparencia/, prensa/, home/, compartidos/. Facilita la operación, pero no sustituye el control de permisos.</p></div>
+    <div class="card"><h3>Reutilización vs. carga nueva</h3><p>Reutiliza cuando el archivo es válido para varios contenidos o es institucional/compartido. Carga uno nuevo cuando el contenido requiere una versión específica o el archivo vigente debe conservarse para otras páginas.</p></div>
+    <div class="card"><h3>Metadatos y calidad</h3><p>Nombre comprensible, texto alternativo (obligatorio para accesibilidad), pertinencia de la imagen y vigencia del documento asociado.</p></div>
+  </div>
+  <table class="matrix" style="margin-top:1.6rem;">
+    <thead><tr><th>Rol</th><th>Crear</th><th>Leer</th><th>Actualizar</th><th>Eliminar / Config.</th></tr></thead>
+    <tbody>
+      <tr><td>Super Admin / Administrador FNA</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td></tr>
+      <tr><td>Publicador</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-no">No</td></tr>
+      <tr><td>Creador / Editor de contenido</td><td class="val-si">Sí</td><td class="val-si">Sí</td><td class="val-cond">Editor sí</td><td class="val-no">No</td></tr>
+      <tr><td>Supervisor / Auditor</td><td class="val-no">No</td><td class="val-si">Sí</td><td class="val-no">No</td><td class="val-no">No</td></tr>
+    </tbody>
+  </table>
+  <div class="accordion">
+    <div class="acc-item">
+      <button class="acc-head"><span>Cargar archivos en la Biblioteca multimedia<span class="acc-tag">9.2.1</span></span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <ol class="step-list">
+          <li>Acceder a la Biblioteca multimedia desde la navegación lateral.</li>
+          <li>Navegar a la carpeta según el dominio funcional del contenido.</li>
+          <li>Clic en "Agregar archivos" o arrastrar los archivos al área de carga.</li>
+          <li>Seleccionar los archivos (PNG, JPG, SVG, WebP, PDF, Excel; máximo 50 MB por archivo).</li>
+          <li>Esperar a que la carga se complete (almacenamiento en Azure Blob Storage).</li>
+          <li>Completar metadatos: nombre descriptivo, texto alternativo (obligatorio en imágenes), caption si aplica.</li>
+          <li>Verificar que el activo aparezca correctamente en la carpeta de destino.</li>
+          <li>Asociar el activo al contenido desde el campo de media correspondiente.</li>
+        </ol>
+        <p style="margin-top:0.4rem;">Antes de cargar un archivo nuevo, verifica si ya existe un activo equivalente reutilizable.</p>
+      </div></div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- 13. SEO -->
+<section class="section" id="s13" data-label="SEO editorial">
+  <div class="eyebrow-num">13 · SEO editorial</div>
+  <h2>El SEO es parte del contenido, no un anexo opcional</h2>
+  <div class="section-scroll">
+  <div class="grid-2" style="margin-top:1.6rem;">
+    <div class="card">
+      <h3>Campos del componente SEO</h3>
+      <p>metaTitle · metaDescription · metaImage · openGraph · keywords · metaRobots · metaViewport · canonicalURL · structuredData</p>
+    </div>
+    <div class="card">
+      <h3>Restricciones reales</h3>
+      <p><b style="color:var(--ink)">metaTitle:</b> requerido, máx. 60 caracteres. <b style="color:var(--ink)">metaDescription:</b> requerida, entre 50 y 160 caracteres. <b style="color:var(--ink)">metaImage:</b> opcional. <b style="color:var(--ink)">structuredData:</b> campo JSON heredado. No deben crearse nuevos campos JSON para necesidades editoriales.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:1rem;">
+    <h3>Ejemplo bien diligenciado: crédito hipotecario (Personas, sección Vivienda)</h3>
+    <p><b style="color:var(--ink)">metaTitle</b> (53 car.): "Crédito hipotecario FNA: tasas, plazos y requisitos". No repite el H1 literal, agrega palabras clave y la marca institucional.</p>
+    <p><b style="color:var(--ink)">metaDescription</b> (148 car.): "Conoce los requisitos, tasas vigentes y plazos del crédito hipotecario del Fondo Nacional del Ahorro. Solicita tu vivienda propia con respaldo institucional." Resume el contenido real, sin repetir el metaTitle.</p>
+  </div>
+  </div>
+</section>
+
+<!-- 14. LIMITES TECNICOS -->
+<section class="section" id="s14" data-label="Límites técnicos">
+  <div class="eyebrow-num">14 · Límites técnicos</div>
+  <h2>Los límites operativos del sistema, en una sola vista</h2>
+  <p class="kicker">Conocerlos evita sorpresas: qué pasa si se excede un umbral y qué acción tomar.</p>
+  <div class="tabs-nav" id="limitsTabs">
+    <button class="tab-btn active" data-tab="almacenamiento">Almacenamiento</button>
+    <button class="tab-btn" data-tab="contenido">Contenido</button>
+    <button class="tab-btn" data-tab="usuarios">Usuarios</button>
+    <button class="tab-btn" data-tab="performance">Performance</button>
+    <button class="tab-btn" data-tab="auditoria">Auditoría</button>
+    <button class="tab-btn" data-tab="idiomas">Idiomas</button>
+    <button class="tab-btn" data-tab="integracion">Integración</button>
+  </div>
+  <div class="tab-panel active" data-panel="almacenamiento">
+    <table class="limits"><thead><tr><th>Límite</th><th>Valor</th><th>Si se excede</th></tr></thead><tbody>
+      <tr><td>Tamaño máximo por archivo</td><td class="v">50 MB</td><td>El archivo se rechaza; comprime o divide en partes.</td></tr>
+      <tr><td>Total de archivos en Biblioteca</td><td class="v">50.000</td><td>La búsqueda se ralentiza; contacta al administrador.</td></tr>
+      <tr><td>Espacio total disponible</td><td class="v">500 GB</td><td>Se solicita aumento de cuota si es necesario.</td></tr>
+      <tr><td>Versiones guardadas por contenido</td><td class="v">50 últimas</td><td>Las versiones más antiguas se purgan automáticamente.</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tab-panel" data-panel="contenido">
+    <table class="limits"><thead><tr><th>Límite</th><th>Valor</th><th>Si se excede</th></tr></thead><tbody>
+      <tr><td>Caracteres en "Título"</td><td class="v">Máx 200</td><td>El campo rechaza el ingreso; acorta el título.</td></tr>
+      <tr><td>metaTitle</td><td class="v">50 a 60</td><td>Google trunca el resultado en buscador.</td></tr>
+      <tr><td>metaDescription</td><td class="v">50 a 160</td><td>Descripción incompleta en resultados de Google.</td></tr>
+      <tr><td>Campos por Collection Type</td><td class="v">200 máx</td><td>Simplifica la estructura del tipo de contenido.</td></tr>
+      <tr><td>Collection Types totales</td><td class="v">200 máx</td><td>Consolida tipos similares.</td></tr>
+      <tr><td>Componentes reutilizables</td><td class="v">500 máx</td><td>Consolida componentes existentes.</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tab-panel" data-panel="usuarios">
+    <table class="limits"><thead><tr><th>Límite</th><th>Valor</th><th>Si se excede</th></tr></thead><tbody>
+      <tr><td>Usuarios activos simultáneos</td><td class="v">100</td><td>El sistema se ralentiza; coordina horarios de entrada.</td></tr>
+      <tr><td>Sesiones por usuario</td><td class="v">3 máx</td><td>Cierra sesión en navegadores innecesarios.</td></tr>
+      <tr><td>Duración de sesión inactiva</td><td class="v">5 min</td><td>Se cierra automáticamente sin guardar.</td></tr>
+      <tr><td>Tokens API por usuario</td><td class="v">5 máx</td><td>Revoca tokens antiguos antes de generar nuevos.</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tab-panel" data-panel="performance">
+    <table class="limits"><thead><tr><th>Límite</th><th>Valor</th><th>Si se excede</th></tr></thead><tbody>
+      <tr><td>Tiempo de respuesta esperado</td><td class="v">&lt; 2 s</td><td>Si tarda más, reporta a soporte.</td></tr>
+      <tr><td>Lighthouse Performance</td><td class="v">≥ 90</td><td>Requisito contractual; contacta al equipo de optimización.</td></tr>
+      <tr><td>Lighthouse Accessibility (WCAG AA)</td><td class="v">≥ 90</td><td>Revisa contraste y textos alternativos.</td></tr>
+      <tr><td>Disponibilidad del sistema</td><td class="v">99,9%</td><td>Solo ~45 min de downtime permitido al mes.</td></tr>
+      <tr><td>Solicitudes API por minuto</td><td class="v">1.000/min</td><td>Se bloquean requests adicionales.</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tab-panel" data-panel="auditoria">
+    <table class="limits"><thead><tr><th>Límite</th><th>Valor</th><th>Si se excede</th></tr></thead><tbody>
+      <tr><td>Retención de auditoría</td><td class="v">12 meses</td><td>Los logs más antiguos se archivan; exporta antes.</td></tr>
+      <tr><td>Registros visibles en panel</td><td class="v">Últimos 1.000</td><td>Exporta para análisis histórico completo.</td></tr>
+      <tr><td>Tamaño máximo de reporte</td><td class="v">50 MB</td><td>Filtra por rango de fechas antes de exportar.</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tab-panel" data-panel="idiomas">
+    <table class="limits"><thead><tr><th>Límite</th><th>Valor</th><th>Si se excede</th></tr></thead><tbody>
+      <tr><td>Locales simultáneos</td><td class="v">5 máx</td><td>Consolida idiomas o solicita aumento.</td></tr>
+      <tr><td>Traducción automática</td><td class="v">No soportada</td><td>Traduce manualmente o con herramienta externa.</td></tr>
+    </tbody></table>
+  </div>
+  <div class="tab-panel" data-panel="integracion">
+    <table class="limits"><thead><tr><th>Límite</th><th>Valor</th><th>Si se excede</th></tr></thead><tbody>
+      <tr><td>Webhooks por evento</td><td class="v">5 máx</td><td>Consolida webhooks similares.</td></tr>
+      <tr><td>Tamaño de payload webhook</td><td class="v">&lt; 5 MB</td><td>Simplifica los datos enviados.</td></tr>
+      <tr><td>Frecuencia de sincronización</td><td class="v">1/min máx</td><td>Usa procesamiento por lotes en su lugar.</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<!-- 15. AUDITORIA -->
+<section class="section" id="s15" data-label="Auditoría y trazabilidad">
+  <div class="eyebrow-num">15 · Auditoría y trazabilidad</div>
+  <h2>Todo queda registrado, y el sitio se audita solo</h2>
+  <div class="section-scroll">
+  <div class="grid-2" style="margin-top:1.6rem;">
+    <div class="card">
+      <h3>Plugin de auditoría (audit-trail)</h3>
+      <p>Registra creación, modificación, eliminación, publicación, despublicación, carga de archivos, autenticación y eventos administrativos, con metadatos de la petición (ruta, usuario, IP, duración). Exportable en CSV y JSON. Retención por defecto de <b style="color:var(--ink)">90 días</b>, hasta <b style="color:var(--ink)">500.000 registros</b>. Acceso: Administrador FNA y Super Admin por defecto.</p>
+    </div>
+    <div class="card">
+      <h3>Controles de sesión</h3>
+      <p>Token de acceso: <b style="color:var(--ink)">6 horas</b>. Token de refresco: hasta <b style="color:var(--ink)">30 días</b>. Sesión inactiva se cierra a los <b style="color:var(--ink)">30 minutos</b>, con aviso 5 minutos antes. Bloqueo pesimista de edición (content-lock) evita ediciones simultáneas.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:1rem;">
+    <h3>Auditor del Sitio: auditoría automática del portal</h3>
+    <p>Ejecuta análisis bajo demanda sobre una URL específica y conserva historial comparable entre ejecuciones:</p>
+    <div class="grid-4" style="margin-top:0.9rem;">
+      <div><b style="color:var(--ink);font-size:0.85rem;">Performance</b><p style="font-size:0.78rem;">Core Web Vitals vía Google PageSpeed Insights (LCP, CLS, INP, TBT, FCP, TTI).</p></div>
+      <div><b style="color:var(--ink);font-size:0.85rem;">Accesibilidad</b><p style="font-size:0.78rem;">Cumplimiento WCAG 2.1 con mapeo de violaciones por nivel A/AA/AAA.</p></div>
+      <div><b style="color:var(--ink);font-size:0.85rem;">SEO</b><p style="font-size:0.78rem;">Metadata, indexación, Open Graph/Twitter Cards, jerarquía de encabezados.</p></div>
+      <div><b style="color:var(--ink);font-size:0.85rem;">Enlaces rotos</b><p style="font-size:0.78rem;">Detección automática con listado de URL y código de error HTTP.</p></div>
+    </div>
+    <p style="margin-top:0.8rem;">Genera puntajes de 0 a 100 por categoría, gráfico de tendencias en el tiempo y comparación entre ejecuciones. Sirve como evidencia verificable ante auditorías internas o externas, pero no sustituye la validación humana de accesibilidad (lectores de pantalla, navegación por teclado).</p>
+  </div>
+  </div>
+</section>
+
+<!-- 16. ADMINISTRACION AVANZADA -->
+<section class="section" id="s16" data-label="Administración avanzada">
+  <div class="eyebrow-num">16 · Administración avanzada</div>
+  <h2>Funciones restringidas a perfiles autorizados</h2>
+  <div class="section-scroll">
+  <div class="grid-3" style="margin-top:1.6rem;">
+    <div class="card"><h3>Usuarios y roles</h3><p>Creación de cuentas, actualización de datos, reasignación de roles y desactivación de acceso. La modificación de la matriz de permisos debe ser excepcional y evaluada por impacto.</p></div>
+    <div class="card"><h3>Tokens API y webhooks</h3><p>Función técnica, no editorial ordinaria. Su modificación puede afectar integraciones y la revalidación del frontend.</p></div>
+    <div class="card"><h3>Content-Type Builder</h3><p>Herramienta técnica para tipos de contenido, componentes, campos, relaciones y validaciones. No es un instrumento de edición ordinaria. Requiere análisis funcional y técnico previo.</p></div>
+  </div>
+  <div class="accordion">
+    <div class="acc-item">
+      <button class="acc-head"><span>Actualización de Strapi y sus plugins<span class="acc-tag">13.6</span></span><span class="plus">+</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <p><b style="color:var(--ink)">Instancia actual:</b> Strapi 5 (v5.32.0), Node.js 18 a 22. Plugins propios: state-workflows, audit-trail, content-lock, content-history, meilisearch-sync, site-auditor, google-analytics-dashboard. Plugins de terceros: @strapi-community/plugin-seo, @fourlights/strapi-plugin-deep-populate, strapi-provider-upload-azure-storage, export-import-fna, entre otros.</p>
+        <p style="margin-top:0.6rem;"><b style="color:var(--ink)">Antes de actualizar:</b> revisar changelog y guías de migración oficiales, verificar compatibilidad de Node.js y de plugins propios/terceros, respaldar base de datos PostgreSQL (con restauración de prueba) y los activos en Azure Blob Storage, planificar ventana de baja actividad y preparar un entorno de staging.</p>
+        <p style="margin-top:0.6rem;"><b style="color:var(--ink)">Actualización del core:</b> rama dedicada en el repositorio, actualizar @strapi/strapi + plugin-users-permissions + plugin-cloud en la misma versión, npm install, reconstruir plugins y panel administrativo, validar funcionalidades críticas (autenticación, edición, publicación, Flujo Editorial), desplegar primero en staging y luego en producción.</p>
+        <p style="margin-top:0.6rem;"><b style="color:var(--ink)">Plugins de terceros:</b> actualizar uno a la vez, revisar notas de versión y configuración en config/plugins.ts, reconstruir y probar la funcionalidad específica de cada plugin.</p>
+        <p style="margin-top:0.6rem;"><b style="color:var(--ink)">Post-actualización:</b> verificar acceso con cada rol operativo, validar un ciclo completo del flujo editorial, revisar el módulo de Auditoría, confirmar la conectividad con Azure y con el frontend Next.js, monitorear logs, y tener listo un procedimiento de rollback ante incidencias críticas.</p>
+      </div></div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- 17. REGLAS DE CALIDAD -->
+<section class="section dark" id="s17" data-label="Reglas de calidad">
+  <div class="eyebrow-num">17 · Reglas de calidad y consistencia</div>
+  <h2>Once reglas de cumplimiento obligatorio</h2>
+  <ul class="checklist">
+    <li><span class="cn">01</span> No dejar contenido crítico incompleto.</li>
+    <li><span class="cn">02</span> Completar siempre los locales requeridos por el alcance del contenido.</li>
+    <li><span class="cn">03</span> Reutilizar componentes, estructuras y patrones existentes.</li>
+    <li><span class="cn">04</span> No crear nuevos campos JSON para necesidades editoriales.</li>
+    <li><span class="cn">05</span> Escalar al equipo técnico lo que no pueda modelarse de forma amigable.</li>
+    <li><span class="cn">06</span> Usar campos de media para imágenes y documentos disponibles.</li>
+    <li><span class="cn">07</span> Evitar URLs manuales cuando el modelo ya contempla carga de medios.</li>
+    <li><span class="cn">08</span> Mantener coherencia entre contenido visible, SEO, medios y relaciones.</li>
+    <li><span class="cn">09</span> Verificar el impacto de publicación en ambos idiomas cuando aplique.</li>
+    <li><span class="cn">10</span> Revisar el contenido desde el punto de vista funcional, no solo del formulario.</li>
+    <li><span class="cn">11</span> Recordar que contenido incompleto puede causar fallback o experiencia inconsistente.</li>
+  </ul>
+</section>
+
+<!-- 18. PUBLICACION Y VISIBILIDAD -->
+<section class="section" id="s18" data-label="Publicación y visibilidad">
+  <div class="eyebrow-num">18 · Publicación y visibilidad en el portal</div>
+  <h2>Publicar en Strapi no es lo mismo que ser visible ya</h2>
+  <div class="grid-3" style="margin-top:1.8rem;">
+    <div class="card"><h3>Regeneración incremental (ISR)</h3><p>El frontend Next.js regenera páginas cada hora en múltiples secciones. El contenido publicado puede tardar en reflejarse; la primera visita tras el vencimiento puede seguir sirviendo la versión previa.</p></div>
+    <div class="card"><h3>Fallback de contenido</h3><p>Si Strapi no responde o los datos están vacíos, el frontend usa JSON de respaldo: puede mostrar información antigua, protegiendo la continuidad del servicio a costa de exigir mayor rigor editorial.</p></div>
+    <div class="card"><h3>Cambios urgentes</h3><p>Publicar no basta por sí solo cuando se requiere visibilidad inmediata. La revalidación manual es un procedimiento técnico que debe coordinarse con el equipo responsable del frontend.</p></div>
+  </div>
+</section>
+
+<!-- 19. COMMUNITY VS ENTERPRISE -->
+<section class="section" id="s19" data-label="Community vs Enterprise">
+  <div class="eyebrow-num">19 · Community vs Enterprise</div>
+  <h2>Community Edition, con las brechas de seguridad cerradas a la medida</h2>
+  <p class="kicker">El CMS FNA opera sobre Strapi 5 Community (v5.32.0). Las capacidades de gobierno que Enterprise ofrece nativamente fueron desarrolladas como plugins propios. Haz clic en cada tarjeta para ver el detalle.</p>
+  <div class="gap-grid" id="gapGrid">
+    <div class="gap-card" data-gap="workflows"><span class="gap-status covered">Cubierto</span><h3>Flujos de revisión editorial</h3><div class="gd">Reemplazado por el plugin propio <b>state-workflows</b>: estados, reglas de transición por rol, comentarios obligatorios de rechazo/devolución y autoaprobación programada.</div><div class="hint">Ver detalle</div></div>
+    <div class="gap-card" data-gap="audit"><span class="gap-status covered">Cubierto</span><h3>Audit Logs</h3><div class="gd">Reemplazado por el plugin propio <b>audit-trail</b>, con exportación CSV/JSON, snapshots antes/después de cada operación y retención configurable.</div><div class="hint">Ver detalle</div></div>
+    <div class="gap-card" data-gap="history"><span class="gap-status covered">Cubierto</span><h3>Content History</h3><div class="gd">Reemplazado por el plugin propio <b>content-history</b>: versiones sucesivas, comparación de diferencias y restauración, con retención de 50 versiones por documento.</div><div class="hint">Ver detalle</div></div>
+    <div class="gap-card" data-gap="rbac"><span class="gap-status covered">Cubierto</span><h3>Advanced RBAC</h3><div class="gd">Cubierto parcialmente mediante roles institucionales sembrados en código, una matriz explícita de permisos por tipo de contenido, acción y locale, y condiciones personalizadas como <b>admin::is-creator</b>.</div><div class="hint">Ver detalle</div></div>
+    <div class="gap-card" data-gap="sso"><span class="gap-status gap">Brecha residual</span><h3>Single Sign-On (SSO)</h3><div class="gd">No cubierto nativamente. Tratamiento sugerido: políticas de contraseñas robustas, expiración de sesión y rate limiting ya activos, evaluación futura de un plugin de SSO, y restricción de acceso por IP/VPN institucional en el corto plazo.</div><div class="hint">Ver detalle</div></div>
+    <div class="gap-card" data-gap="releases"><span class="gap-status gap">Brecha residual</span><h3>Releases / publicación programada</h3><div class="gd">No cubierto en el alcance actual. Tratamiento sugerido: coordinación editorial manual con el rol Publicador, y evaluación futura de un módulo propio de programación apoyado en cron jobs.</div><div class="hint">Ver detalle</div></div>
+  </div>
+</section>
+
+<!-- 20. GLOSARIO -->
+<section class="section" id="s20" data-label="Glosario">
+  <div class="eyebrow-num">20 · Glosario de términos</div>
+  <h2>60 conceptos técnicos e institucionales</h2>
+  <div class="gloss-search">
+    <input type="text" id="glossInput" placeholder="Buscar un término (ej: locale, aprobador, ISR)...">
+    <div class="gloss-count" id="glossCount">60 términos</div>
+  </div>
+  <div class="gloss-grid" id="glossGrid"></div>
+</section>
+
+<!-- 21. ANEXOS -->
+<section class="section" id="s21" data-label="Anexos">
+  <div class="eyebrow-num">21 · Anexo, Mapa funcional</div>
+  <h2>Nueve dominios funcionales, un mismo sistema</h2>
+  <p class="kicker">La comprensión del dominio funcional de cada contenido es parte del trabajo editorial esperado. La reutilización de componentes es una política arquitectónica real del proyecto.</p>
+  <table class="domain">
+    <thead><tr><th>Dominio</th><th>Alcance funcional principal</th><th>Tipos de contenido</th></tr></thead>
+    <tbody>
+      <tr><td>Global y Home</td><td>Configuración transversal del portal y portada</td><td class="n">2</td></tr>
+      <tr><td>Personas</td><td>Ahorro, cesantías, vivienda, crédito y programas</td><td class="n">49</td></tr>
+      <tr><td>Empresas</td><td>Servicios, normatividad, reportes y sectores</td><td class="n">18</td></tr>
+      <tr><td>Atención Ciudadana</td><td>Canales, PQRS, inclusión, trámites, FAQ, glosario, puntos de atención</td><td class="n">48</td></tr>
+      <tr><td>Participa</td><td>Participación ciudadana, control social, rendición de cuentas</td><td class="n">13</td></tr>
+      <tr><td>Constructoras</td><td>Información institucional y activos relacionados</td><td class="n">2</td></tr>
+      <tr><td>Prensa</td><td>Blog, boletines, audios e informes especiales</td><td class="n">5</td></tr>
+      <tr><td>Transparencia</td><td>Información de entidad, normativa, presupuestos, riesgos, datos abiertos</td><td class="n">38</td></tr>
+      <tr><td>Superapp</td><td>Contenidos y formularios de experiencias móviles y complementarias</td><td class="n">7</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 22. CIERRE -->
+<section class="section dark" id="s22" data-label="Resumen ejecutivo">
+  <div class="eyebrow-num">22 · Resumen ejecutivo</div>
+  <h2>En síntesis</h2>
+  <div class="closing-grid">
+    <ul>
+      <li><b>01</b> El CMS opera sobre Strapi Community, reforzado con seis plugins propios que cubren gobierno, trazabilidad y seguridad.</li>
+      <li><b>02</b> Ningún contenido llega al público sin pasar por Creador → Editor → Aprobador, salvo publicación directa justificada y registrada.</li>
+      <li><b>03</b> Toda operación queda auditada: quién, qué, cuándo y desde dónde, con retención de 90 días y hasta 500.000 registros.</li>
+      <li><b>04</b> El sistema tiene límites técnicos definidos y documentados para almacenamiento, contenido, usuarios y performance.</li>
+    </ul>
+    <ul>
+      <li><b>05</b> Las brechas frente a Strapi Enterprise, SSO y publicación programada, están identificadas y tienen tratamiento propuesto.</li>
+      <li><b>06</b> El portal opera en 9 dominios funcionales con 188 tipos de contenido y 609 bloques reutilizables.</li>
+      <li><b>07</b> La publicación no equivale a visibilidad inmediata: ISR y fallback exigen disciplina editorial adicional.</li>
+      <li><b>08</b> Once reglas de calidad institucional y un glosario de 60 términos sostienen la consistencia operativa diaria.</li>
+    </ul>
+  </div>
+  <div class="footer-src">
+    Fuentes: documentación oficial de Strapi (Administration panel, Content Manager, Content-Type Builder, i18n, Media Library, RBAC) y fuentes internas del proyecto FNA (config, seeds de roles, plugins propios).
+    <table class="version-table">
+      <thead><tr><th>Versión</th><th>Fecha</th><th>Razón</th></tr></thead>
+      <tbody><tr><td>1.0</td><td>08/07/2026</td><td>Primera versión</td></tr></tbody>
+    </table>
+    Manual CMS Strapi, Página Web · Fondo Nacional del Ahorro. Contacto: soporte.cms@fna.gov.co
+  </div>
+</section>
+
+<!-- 23. EVALUACION -->
+<section class="section" id="s23" data-label="Evaluación">
+  <div class="eyebrow-num">23 · Evaluación</div>
+  <h2>Pon a prueba lo que acabas de ver</h2>
+  <p class="kicker">20 preguntas de opción múltiple sobre roles, flujo editorial, límites técnicos y buenas prácticas del CMS. Selecciona una respuesta para ver la retroalimentación.</p>
+  <div class="quiz-wrap" id="quizWrap">
+    <div class="quiz-progress"><div class="quiz-progress-fill" id="quizProgressFill"></div></div>
+    <div class="quiz-meta"><span id="quizCounter">Pregunta 1 de 20</span><span id="quizScore">Aciertos: 0</span></div>
+    <div class="quiz-card" id="quizCard"></div>
+    <div class="quiz-nav">
+      <button class="quiz-btn" id="quizNextBtn" disabled>Siguiente</button>
+      <button class="quiz-btn ghost" id="quizRestartBtn" style="display:none;">Reiniciar evaluación</button>
+    </div>
+  </div>
+</section>
+
+
+<script>
+const sections = Array.from(document.querySelectorAll('.section'));
+const dotnav = document.getElementById('dotnav');
+sections.forEach((s)=>{
+  const btn = document.createElement('button');
+  btn.innerHTML = `<span class="lbl">${s.dataset.label}</span><span class="dot"></span>`;
+  btn.addEventListener('click',()=>s.scrollIntoView({behavior:'smooth'}));
+  dotnav.appendChild(btn);
+});
+const dotButtons = Array.from(dotnav.children);
+const chapterBadge = document.getElementById('chapterBadge');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const idx = sections.indexOf(e.target);
+      dotButtons.forEach(b=>b.classList.remove('active'));
+      dotButtons[idx].classList.add('active');
+      chapterBadge.textContent = e.target.dataset.label;
+    }
+  });
+},{threshold:0.5});
+sections.forEach(s=>io.observe(s));
+
+document.querySelectorAll('.card, .role-pill, .gap-card, .acc-item').forEach(el=>el.classList.add('reveal'));
+const revealIO = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in-view');
+      revealIO.unobserve(e.target);
+    }
+  });
+},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el=>revealIO.observe(el));
+
+window.addEventListener('scroll',()=>{
+  const h = document.documentElement;
+  const pct = (h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
+  document.getElementById('progressFill').style.width = pct+'%';
+});
+
+const counters = document.querySelectorAll('[data-count]');
+const counterIO = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const el = e.target;
+      const target = parseInt(el.dataset.count,10);
+      let cur = 0;
+      const step = Math.max(1,Math.round(target/40));
+      const t = setInterval(()=>{
+        cur += step;
+        if(cur>=target){cur=target;clearInterval(t);}
+        el.textContent = cur;
+      },22);
+      counterIO.unobserve(el);
+    }
+  });
+},{threshold:0.6});
+counters.forEach(c=>counterIO.observe(c));
+
+const roleData = {
+  superadmin:{title:"Super Admin",items:["Acceso integral al panel y sus configuraciones.","Administra contenido, usuarios, roles y plugins.","Recibe permisos del plugin Flujo Editorial por bootstrap del propio plugin.","Único perfil con acceso técnico pleno sin reservas adicionales."]},
+  adminfna:{title:"Administrador FNA",items:["Gestión amplia sobre contenido, publicación, Biblioteca multimedia y configuraciones administrativas.","Tiene acceso al plugin de Auditoría.","No es equivalente por definición al Super Admin de Strapi.","No recibe por defecto permisos explícitos del plugin Flujo Editorial, aunque opera como rol bypass de publicación."]},
+  publicador:{title:"Publicador",items:["Lee, edita y publica contenido en los tipos a los que tenga acceso.","Puede publicar directamente sin completar todas las etapas del flujo (bypass), dejando una justificación registrada.","No tiene permisos generales de eliminación.","Consulta usuarios y roles en modo de lectura."]},
+  supervisor:{title:"Supervisor / Auditor",items:["Acceso global de solo lectura sobre contenido.","Lee usuarios, roles y Biblioteca multimedia.","A pesar del nombre del rol, no recibe por defecto permisos del plugin de Auditoría."]},
+  aprobador:{title:"Aprobador",items:["Lee y edita contenido dentro del proceso de validación.","Aprueba contenido en estado \"Listo para Aprobación\".","Rechaza con comentario obligatorio que oriente la corrección.","No tiene permiso de publicación ni de creación de contenido nuevo."]},
+  editor:{title:"Editor de contenido",items:["Lee y edita cualquier contenido al que tenga acceso, sin restricción de autoría.","Revisa forma, lenguaje, claridad y completitud.","Devuelve contenido al Creador con comentario obligatorio si requiere correcciones.","No puede publicar ni eliminar contenido."]},
+  creador:{title:"Creador de contenido",items:["Crea y edita únicamente sus propias entradas en Collection Types (condición admin::is-creator).","No tiene edición libre sobre contenido de terceros.","Puede cargar archivos nuevos en la Biblioteca multimedia.","No tiene permiso de publicación."]}
+};
+const matrixRows = document.querySelectorAll('#rolesMatrix tbody tr');
+const rdTitle = document.getElementById('rdTitle');
+const rdList = document.getElementById('rdList');
+function paintRole(key){
+  matrixRows.forEach(r=>r.classList.toggle('active', r.dataset.role===key));
+  const d = roleData[key];
+  rdTitle.textContent = d.title;
+  rdList.innerHTML = d.items.map(i=>`<li>${i}</li>`).join('');
+}
+matrixRows.forEach(r=>r.addEventListener('click',()=>paintRole(r.dataset.role)));
+paintRole('superadmin');
+matrixRows[0].classList.add('active');
+
+const flowData = {
+  borrador:{t:"Borrador",d:"Estado inicial. El contenido existe en el CMS pero NO es visible en el portal público. Puede editarse libremente por su dueño."},
+  revision:{t:"En Revisión",d:"El Creador envía el contenido a revisión (queda bloqueado para él). El Editor valida forma, lenguaje, claridad, consistencia y completitud."},
+  listo:{t:"Listo para Aprobación",d:"El Editor marca el contenido como listo y asigna un Aprobador responsable de la siguiente etapa."},
+  aprobado:{t:"Aprobado",d:"El Aprobador valida el contenido y lo deja listo para publicación. Si no hay revisión manual en 3 días, el sistema lo aprueba automáticamente."},
+  publicado:{t:"Publicado",d:"El contenido es visible en el portal público. Es 'producción viva', sujeto a regeneración incremental y caché."},
+  archivado:{t:"Archivado",d:"Contenido antiguo que ya no se usa activamente. Se mantiene como histórico, pero no aparece en búsquedas públicas. Solo el Administrador puede archivar."},
+  devuelto:{t:"Devuelto",d:"El Editor devuelve el contenido al Creador con un comentario obligatorio que explica qué debe corregirse. Vuelve al estado Borrador."},
+  rechazado:{t:"Rechazado",d:"El Editor o Aprobador rechaza el contenido con comentario obligatorio. El ciclo se reinicia desde Borrador, incluso si ya estaba publicado."},
+  bypass:{t:"Publicación directa (bypass)",d:"Administrador FNA, Publicador y Super Admin pueden publicar sin recorrer todas las etapas. El sistema exige una justificación que queda registrada en la auditoría."}
+};
+const flowNodes = document.querySelectorAll('.flow-node');
+const flowDetail = document.getElementById('flowDetail');
+function paintFlow(key){
+  flowNodes.forEach(n=>n.classList.toggle('active', n.dataset.state===key));
+  const d = flowData[key];
+  flowDetail.querySelector('.ft').textContent = d.t;
+  flowDetail.querySelector('p').textContent = d.d;
+}
+flowNodes.forEach(n=>n.addEventListener('click',()=>paintFlow(n.dataset.state)));
+
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabPanels = document.querySelectorAll('.tab-panel');
+tabBtns.forEach(b=>{
+  b.addEventListener('click',()=>{
+    tabBtns.forEach(x=>x.classList.remove('active'));
+    tabPanels.forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelector(`.tab-panel[data-panel="${b.dataset.tab}"]`).classList.add('active');
+  });
+});
+
+document.querySelectorAll('.gap-card').forEach(c=>{
+  c.addEventListener('click',()=>c.classList.toggle('open'));
+});
+
+document.querySelectorAll('.acc-head').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('open'));
+});
+
+const glossary = [
+["Activo","Archivo (imagen, documento, audio) cargado en la Biblioteca Multimedia y reutilizable en múltiples contenidos."],
+["Admin / Administrador FNA","Rol institucional con amplios privilegios sobre contenido, usuarios, roles, Biblioteca Multimedia y configuración del CMS."],
+["API","Interfaz técnica que permite la comunicación entre sistemas externos y el CMS."],
+["Aprobación","Acción del rol Aprobador para validar un contenido \"Listo para Aprobación\" y moverlo a \"Aprobado\"."],
+["Aprobador","Rol responsable de validar el contenido revisado por el Editor; puede aprobar o rechazar."],
+["Auditoría (Audit Trail)","Registro automático e inalterable de las acciones realizadas dentro del CMS."],
+["Autoaprobación","Aprobación automática del sistema cuando un contenido permanece 3 días sin decisión del Aprobador."],
+["Biblioteca Multimedia","Módulo de almacenamiento, organización y administración de imágenes, documentos y recursos."],
+["Bilingüe / Locale","Capacidad de gestionar contenido en múltiples idiomas; cada uno es una versión independiente."],
+["Borrador","Estado inicial de un contenido; no visible para usuarios externos hasta ser publicado."],
+["Caption","Leyenda o descripción asociada a una imagen o recurso multimedia."],
+["Collection Type","Estructura que gestiona múltiples registros del mismo tipo de información."],
+["Comentario obligatorio","Observación requerida al devolver o rechazar contenido."],
+["Componente","Bloque reutilizable de contenido incorporable en distintas páginas o registros."],
+["Componente repetible","Componente que permite agregar múltiples elementos del mismo tipo."],
+["Completitud","Criterio de calidad que exige el diligenciamiento adecuado de todos los campos requeridos."],
+["Content-Lock","Funcionalidad que impide la edición simultánea de un mismo contenido por varios usuarios."],
+["Creador de Contenido","Rol encargado de crear y gestionar borradores; sin permisos de publicación."],
+["CSV","Formato de archivo para importar o exportar datos masivamente."],
+["Despublicación","Acción que retira un contenido del portal público sin eliminarlo del CMS."],
+["Devuelto","Estado asignado por el Editor cuando un contenido requiere ajustes."],
+["DRP","Plan de recuperación ante desastres para restaurar la operación en caso de fallas críticas."],
+["Draft & Publish","Funcionalidad que mantiene simultáneamente versiones publicadas y en borrador."],
+["Editor de Contenido","Rol que revisa calidad, redacción, consistencia y cumplimiento editorial."],
+["En Revisión","Estado editorial en el que un Editor evalúa el contenido."],
+["Entry","Registro individual perteneciente a un Collection Type."],
+["Escalación","Proceso mediante el cual una situación se remite a un nivel superior."],
+["Estado Editorial","Posición actual de un contenido dentro del flujo editorial institucional."],
+["Flujo Editorial","Secuencia de estados que sigue un contenido desde su creación hasta su publicación."],
+["Headless CMS","CMS que administra información sin incorporar directamente la capa de presentación visual."],
+["Historial de Versiones","Registro de modificaciones que permite consultar o restaurar versiones anteriores."],
+["Lighthouse","Herramienta de Google para evaluar desempeño, accesibilidad, SEO y buenas prácticas."],
+["Listo para Aprobación","Estado que indica que el contenido superó la revisión editorial."],
+["Locale","Código de idioma que identifica una versión específica del contenido (es / en)."],
+["Media Library","Denominación en inglés de la Biblioteca Multimedia."],
+["metaDescription","Campo SEO que resume el contenido y se muestra en resultados de búsqueda."],
+["metaImage","Imagen usada como representación visual del contenido en buscadores y redes sociales."],
+["metaTitle","Título optimizado para motores de búsqueda, mostrado en Google y pestañas del navegador."],
+["Panel Lateral de Flujo Editorial","Componente que muestra el estado actual y gestiona transiciones del flujo."],
+["Permiso","Autorización asignada a un usuario para ejecutar acciones específicas."],
+["Plugin","Extensión que agrega funcionalidades adicionales al CMS."],
+["Publicación","Acción que pone un contenido a disposición de los usuarios finales."],
+["Publicado","Estado final que indica que un contenido es visible para el público."],
+["Publicador","Rol autorizado para ejecutar la publicación de contenidos aprobados."],
+["Rechazado","Estado asignado cuando un contenido no cumple los criterios y requiere corrección."],
+["Relación","Vínculo existente entre diferentes contenidos dentro del CMS."],
+["Restauración de Versión","Proceso mediante el cual se recupera una versión anterior de un contenido."],
+["Rol","Conjunto de permisos asignados a un usuario según sus responsabilidades."],
+["SEO","Prácticas y configuraciones para mejorar la visibilidad en motores de búsqueda."],
+["Sesión","Período durante el cual un usuario permanece autenticado en el CMS."],
+["Single Type","Tipo de contenido que admite una única instancia dentro del CMS."],
+["Slug / UID","Identificador único utilizado en las URL y rutas de navegación."],
+["Strapi","CMS Headless de código abierto implementado para la administración de contenidos."],
+["Supervisor / Auditor","Rol con acceso de solo lectura para monitoreo, control y seguimiento."],
+["Texto Alternativo (Alt)","Descripción textual de imágenes para garantizar accesibilidad y cumplimiento WCAG."],
+["Trazabilidad","Capacidad de identificar qué cambios se realizaron, quién y cuándo."],
+["Validación","Verificación automática o manual del cumplimiento de requisitos definidos."],
+["Webhook","Mecanismo que notifica automáticamente a otros sistemas ante un evento del CMS."],
+["WCAG","Norma internacional de accesibilidad digital; estándar exigido: WCAG 2.1 AA."],
+["Drupal","CMS definido inicialmente en el contrato del proyecto (antecedente de Strapi)."],
+["ISR","Regeneración incremental de Next.js: intervalo de 1 hora para reflejar cambios publicados."],
+["Fallback","JSON de respaldo que el frontend usa si Strapi no responde o los datos están vacíos."]
+];
+const glossGrid = document.getElementById('glossGrid');
+const glossCount = document.getElementById('glossCount');
+glossary.sort((a,b)=>a[0].localeCompare(b[0],'es')).forEach(([t,d])=>{
+  const el = document.createElement('div');
+  el.className = 'gloss-item';
+  el.innerHTML = `<div class="gt">${t}</div><div class="gd">${d}</div>`;
+  el.dataset.search = (t+' '+d).toLowerCase();
+  glossGrid.appendChild(el);
+});
+document.getElementById('glossInput').addEventListener('input',(e)=>{
+  const q = e.target.value.toLowerCase().trim();
+  let visible = 0;
+  document.querySelectorAll('.gloss-item').forEach(el=>{
+    const match = el.dataset.search.includes(q);
+    el.classList.toggle('hidden', !match);
+    if(match) visible++;
+  });
+  glossCount.textContent = `${visible} término${visible===1?'':'s'}`;
+});
+glossCount.textContent = `${glossary.length} términos`;
+
+const quizData = [
+{q:"¿Qué edición de Strapi 5 opera actualmente el CMS del FNA?", opts:["Enterprise","Community","Cloud","Growth"], correct:1, exp:"El CMS FNA opera sobre Strapi 5 Community (v5.32.0), reforzado con plugins propios que cubren las capacidades de gobierno que Enterprise ofrece nativamente."},
+{q:"¿Cuál rol puede publicar contenido sin recorrer todas las etapas del flujo editorial, dejando una justificación registrada?", opts:["Creador de contenido","Editor de contenido","Publicador","Supervisor / Auditor"], correct:2, exp:"El Publicador, junto con Administrador FNA y Super Admin, puede ejecutar publicación directa (bypass), siempre que quede una justificación registrada en auditoría."},
+{q:"¿Cuántos días puede permanecer un contenido en \"Listo para Aprobación\" antes de que el sistema lo apruebe automáticamente?", opts:["1 día","3 días","7 días","30 días"], correct:1, exp:"Si no hay decisión manual del Aprobador en 3 días, el sistema aprueba el contenido automáticamente y deja constancia de la transición."},
+{q:"¿Qué plugin propio reemplaza la funcionalidad de Review Workflows de Strapi Enterprise?", opts:["audit-trail","content-lock","state-workflows","content-history"], correct:2, exp:"state-workflows gestiona los estados, las reglas de transición por rol y los comentarios obligatorios de rechazo o devolución."},
+{q:"¿Cuál es el máximo de caracteres recomendado para el campo metaTitle?", opts:["30 caracteres","60 caracteres","120 caracteres","160 caracteres"], correct:1, exp:"metaTitle es requerido y admite un máximo de 60 caracteres. Por encima de ese rango, Google trunca el resultado en el buscador."},
+{q:"¿Qué rol tiene acceso de solo lectura sobre el contenido y no puede editar ni publicar?", opts:["Aprobador","Editor de contenido","Supervisor / Auditor","Administrador FNA"], correct:2, exp:"El Supervisor / Auditor tiene acceso global de solo lectura sobre contenido, usuarios, roles y Biblioteca multimedia."},
+{q:"¿Cuál es el tamaño máximo permitido por archivo en la Biblioteca multimedia?", opts:["10 MB","25 MB","50 MB","100 MB"], correct:2, exp:"El peso máximo permitido por archivo es de 50 MB. Si se excede, el archivo se rechaza y debe comprimirse o dividirse."},
+{q:"¿Qué ocurre cuando dos usuarios intentan editar el mismo contenido al mismo tiempo?", opts:["Se crean dos versiones en paralelo","El plugin content-lock bloquea la edición simultánea","El sistema los notifica pero permite editar igual","El contenido se despublica automáticamente"], correct:1, exp:"El plugin content-lock aplica un bloqueo pesimista: el segundo usuario ve el aviso de contenido bloqueado hasta que se libere, máximo 30 minutos."},
+{q:"¿Cuál es el locale por defecto del CMS, y qué regla institucional aplica sobre el orden de diligenciamiento?", opts:["Inglés por defecto, se traduce primero al español","Español por defecto, se completa primero en español y luego se traduce al inglés","Ambos idiomas se publican siempre al mismo tiempo","El locale por defecto se elige por tipo de contenido"], correct:1, exp:"El locale por defecto es \"es\". La regla institucional exige completar primero la versión en español antes de trasladar contenido validado al inglés."},
+{q:"¿Cuántos registros como máximo conserva el plugin de auditoría (audit-trail)?", opts:["10.000","100.000","500.000","1.000.000"], correct:2, exp:"El plugin audit-trail tiene una retención por defecto de 90 días y hasta 500.000 registros, exportables en CSV y JSON."},
+{q:"¿Qué rol puede archivar un contenido (transición a estado \"Archivado\")?", opts:["Editor de contenido","Publicador","Administrador","Creador de contenido"], correct:2, exp:"Según la tabla de transiciones del ciclo de vida, solo el Administrador ejecuta la transición de Publicado o Borrador hacia Archivado."},
+{q:"¿Por qué publicar un contenido en Strapi no garantiza visibilidad inmediata en el portal?", opts:["Porque el CMS siempre requiere aprobación doble","Porque el frontend usa regeneración incremental (ISR) con intervalos de hasta una hora","Porque el contenido debe traducirse primero","Porque la Biblioteca multimedia debe sincronizarse manualmente"], correct:1, exp:"El frontend en Next.js usa ISR con intervalo de 1 hora en múltiples páginas, por lo que la actualización visible no depende solo del botón Publicar."},
+{q:"¿Qué es el \"fallback\" de contenido en el ecosistema FNA?", opts:["Una copia de seguridad diaria de la base de datos","Un JSON de respaldo que el frontend usa cuando Strapi no responde o los datos están vacíos","El historial de versiones de un contenido","Un plugin de traducción automática"], correct:1, exp:"El fallback protege la continuidad del servicio mostrando una versión previa o datos estáticos, pero exige mayor rigor editorial para evitar inconsistencias."},
+{q:"¿Cuál de las siguientes es una brecha residual frente a Strapi Enterprise que el manual identifica como NO cubierta por desarrollo propio?", opts:["Audit Logs","Content History","Single Sign-On (SSO)","Flujos de revisión editorial"], correct:2, exp:"SSO y la publicación programada (Releases) son las dos brechas residuales identificadas. Las demás capacidades fueron cubiertas con plugins propios."},
+{q:"¿Qué diferencia hay entre un Collection Type y un Single Type?", opts:["No hay diferencia funcional","El Collection Type admite múltiples registros; el Single Type admite una única instancia","El Single Type es exclusivo para imágenes","El Collection Type solo existe en inglés"], correct:1, exp:"Los Collection Types gestionan entradas repetibles, como noticias o FAQ, mientras que los Single Types representan páginas únicas como Inicio o Contacto."},
+{q:"¿Cuántos minutos de inactividad cierran una sesión automáticamente en el panel administrativo?", opts:["1 minuto","5 minutos","15 minutos","60 minutos"], correct:1, exp:"La sesión se cierra tras 5 minutos de inactividad, por lo que se recomienda guardar el trabajo con regularidad."},
+{q:"¿Qué debe hacer un Creador de contenido si su contenido fue rechazado por segunda vez?", opts:["Eliminarlo y crear uno nuevo","Reenviarlo de inmediato sin cambios","Contactar directamente al Editor o Aprobador antes de reenviar","Escalar el caso a Super Admin de forma obligatoria"], correct:2, exp:"El manual recomienda, ante rechazos repetidos, contactar directamente al Editor o Aprobador y no reenviar el contenido sin resolver los problemas identificados."},
+{q:"¿Cuál es el nivel de accesibilidad WCAG exigido al proyecto?", opts:["WCAG 2.0 nivel A","WCAG 2.1 nivel AA","WCAG 2.2 nivel AAA","No hay un estándar definido"], correct:1, exp:"El estándar exigido para el proyecto es WCAG 2.1 en su nivel AA, verificado también por el plugin Auditor del Sitio."},
+{q:"¿Qué dominio funcional del portal FNA concentra el mayor número de tipos de contenido?", opts:["Prensa","Personas","Superapp","Constructoras"], correct:1, exp:"El dominio Personas concentra 49 tipos de contenido, entre ahorro, cesantías, vivienda, crédito y programas: el mayor entre los nueve dominios funcionales."},
+{q:"¿Qué describe correctamente el uso institucional del Content-Type Builder en el FNA?", opts:["Es una herramienta de edición ordinaria para cualquier Creador de contenido","Es una herramienta técnica que requiere análisis funcional y técnico antes de cualquier cambio estructural","Solo se usa para cargar imágenes","Reemplaza al Gestor de Contenido en el día a día"], correct:1, exp:"El manual clasifica el Content-Type Builder como herramienta técnica de administración avanzada, no como instrumento de edición ordinaria."}
+];
+let quizIndex = 0, quizScore = 0, quizAnswered = false;
+const quizCard = document.getElementById('quizCard');
+const quizCounter = document.getElementById('quizCounter');
+const quizScoreLbl = document.getElementById('quizScore');
+const quizNextBtn = document.getElementById('quizNextBtn');
+const quizRestartBtn = document.getElementById('quizRestartBtn');
+const quizProgressFill = document.getElementById('quizProgressFill');
+const letters = ['A','B','C','D'];
+
+function renderQuiz(){
+  const item = quizData[quizIndex];
+  quizAnswered = false;
+  quizCounter.textContent = `Pregunta ${quizIndex+1} de ${quizData.length}`;
+  quizScoreLbl.textContent = `Aciertos: ${quizScore}`;
+  quizProgressFill.style.width = `${((quizIndex)/quizData.length)*100}%`;
+  quizNextBtn.disabled = true;
+  quizNextBtn.textContent = quizIndex === quizData.length-1 ? 'Ver resultado' : 'Siguiente';
+  const optsHtml = item.opts.map((o,i)=>`<button class="quiz-option" data-i="${i}"><span class="qletter">${letters[i]}</span><span>${o}</span></button>`).join('');
+  quizCard.innerHTML = `<div class="quiz-question">${item.q}</div><div class="quiz-options">${optsHtml}</div><div class="quiz-explain" id="quizExplain" style="display:none;"></div>`;
+  quizCard.querySelectorAll('.quiz-option').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(quizAnswered) return;
+      quizAnswered = true;
+      const chosen = parseInt(btn.dataset.i,10);
+      const correct = item.correct;
+      quizCard.querySelectorAll('.quiz-option').forEach(b=>{
+        b.classList.add('disabled');
+        const bi = parseInt(b.dataset.i,10);
+        if(bi === correct) b.classList.add('correct');
+        else if(bi === chosen) b.classList.add('incorrect');
+      });
+      if(chosen === correct) quizScore++;
+      quizScoreLbl.textContent = `Aciertos: ${quizScore}`;
+      const exp = document.getElementById('quizExplain');
+      exp.style.display = 'block';
+      exp.innerHTML = `<b>${chosen===correct ? 'Correcto.' : 'No exactamente.'}</b> ${item.exp}`;
+      quizNextBtn.disabled = false;
+    });
+  });
+}
+
+quizNextBtn.addEventListener('click',()=>{
+  if(quizIndex < quizData.length-1){
+    quizIndex++;
+    renderQuiz();
+  } else {
+    quizProgressFill.style.width = '100%';
+    quizCounter.textContent = 'Evaluación completada';
+    const pct = Math.round((quizScore/quizData.length)*100);
+    let msg = 'Vale la pena repasar la matriz de roles y el ciclo de vida antes de la sesión con el cliente.';
+    if(pct >= 90) msg = 'Dominas el manual a fondo. Listo para la sesión con el cliente.';
+    else if(pct >= 70) msg = 'Buen nivel general. Repasa los puntos que fallaste antes de presentar.';
+    quizCard.innerHTML = `<div class="quiz-result"><div class="score-num">${quizScore} / ${quizData.length}</div><div class="score-lab">${pct}% de aciertos</div><div class="score-msg">${msg}</div></div>`;
+    quizNextBtn.style.display = 'none';
+    quizRestartBtn.style.display = 'inline-block';
+  }
+});
+quizRestartBtn.addEventListener('click',()=>{
+  quizIndex = 0; quizScore = 0;
+  quizNextBtn.style.display = 'inline-block';
+  quizRestartBtn.style.display = 'none';
+  renderQuiz();
+});
+renderQuiz();
+</script>
+</body>
+</html>
